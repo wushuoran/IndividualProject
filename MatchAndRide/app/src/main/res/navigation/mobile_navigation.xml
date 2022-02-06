@@ -7,19 +7,20 @@
 
     <fragment
         android:id="@+id/navigation_ride"
-        android:name="com.example.myapplication.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home"
+        android:name="com.example.myapplication.ui.home.RideFragment"
+        android:label="Match &amp; Ride"
+        tools:layout="@layout/fragment_ride"
     />
 
     <fragment
         android:id="@+id/navigation_discover"
-        android:name="com.example.myapplication.ui.dashboard.DashboardFragment"
+        android:name="com.example.myapplication.ui.dashboard.DiscoverFragment"
         android:label="Discover"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_discover" />
 
     <fragment
         android:id="@+id/navigation_me"
-        android:name="com.example.myapplication.ui.notifications.NotificationsFragment"
+        android:name="com.example.myapplication.ui.notifications.MeFragment"
         android:label="Me"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_me" />
 </navigation>

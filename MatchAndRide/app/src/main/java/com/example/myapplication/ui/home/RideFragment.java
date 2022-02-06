@@ -16,28 +16,27 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
-import com.example.myapplication.databinding.FragmentHomeBinding;
+import com.example.myapplication.databinding.FragmentRideBinding;
 
-public class HomeFragment extends Fragment {
+public class RideFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
-    private FragmentHomeBinding binding;
+    private RideViewModel rideViewModel;
+    private FragmentRideBinding binding;
     private ImageView weeklySum;
     private Switch onlineSwitch;
     private Spinner bikeSelector;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        rideViewModel =
+                new ViewModelProvider(this).get(RideViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentRideBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         /*
-        final TextView textView = binding.textName;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        final TextView textView = binding.textHome;
+        rideViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
