@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/ed1"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="User ID (Number Only)"
+        android:inputType="number"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/ed2"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="Password"
+        android:layout_below="@+id/ed1"
+        android:layout_marginTop="10dp"
+        android:inputType="textPassword"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
+
+    <Button
+        android:id="@+id/btn1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/ed2"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:text="Login"/>
+
+</RelativeLayout>

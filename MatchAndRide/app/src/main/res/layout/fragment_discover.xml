@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,7 +45,62 @@
 
     </LinearLayout>
 
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_nearby"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="10dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:clickable="true"
+        map:uiCompass="true"
+        map:zOrderOnTop="true"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btn_add_to_list"
+            android:layout_width="170dp"
+            android:layout_height="65dp"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:text="Add to \n Invite List"/>
+
+        <Button
+            android:id="@+id/btn_send_inv"
+            android:layout_width="170dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="20dp"
+            android:textAllCaps="false"
+            android:layout_gravity="center"
+            android:textSize="15sp"
+            android:text="Send \n Invitation" />
 
 
+    </LinearLayout>>
+
+
+    <Button
+        android:id="@+id/btn_pop_route"
+        android:layout_width="360dp"
+        android:layout_height="65dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:text="Popular Routes" />
+
+    <Button
+        android:id="@+id/btn_road_con"
+        android:layout_width="360dp"
+        android:layout_height="65dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:text="Road Condition" />
 
 </LinearLayout>

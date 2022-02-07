@@ -11,6 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -20,6 +21,7 @@ import com.example.myapplication.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private boolean loginStatus = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         //AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -39,28 +42,33 @@ public class MainActivity extends AppCompatActivity {
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+
+
     }
 
-    Fragment firstFragment = new RideFragment();
-    Fragment secondFragment = new DiscoverFragment();
-    Fragment thirdFragment = new MeFragment();
+    /*
+    navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selected;
+                switch (item.getItemId()) {
 
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    case R.id.navigation_me:
+                        selected = new MeFragment();
+                        if (loginStatus==true){
+                            System.out.println("login");
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.container, selected);
+                            ft.addToBackStack(null);
+                            ft.commit();
+                            return true;
+                        }else{System.out.println("not login");}
 
-        switch (item.getItemId()) {
-            case R.id.navigation_ride:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, firstFragment).commit();
-                return true;
+                }
+                return false;
+            }
+        });
 
-            case R.id.navigation_discover:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, secondFragment).commit();
-                return true;
-
-            case R.id.navigation_me:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, thirdFragment).commit();
-                return true;
-        }
-        return false;
-    }
+    */
 
 }
