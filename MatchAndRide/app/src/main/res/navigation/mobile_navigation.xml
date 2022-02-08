@@ -24,10 +24,10 @@
         android:label="Me"
         tools:layout="@layout/fragment_me" />
 
-    <fragment
+    <!--fragment
         android:id="@+id/navigation_login"
-        android:name="com.example.myapplication.ui.notifications.LoginFragment"
+        android:name="com.example.myapplication.LoginActivity"
         android:label="Login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" /-->
 
 </navigation>

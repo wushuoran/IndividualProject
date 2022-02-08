@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentRideBinding;
 
@@ -26,6 +28,7 @@ public class RideFragment extends Fragment {
     private ImageView weeklySum;
     private Switch onlineSwitch;
     private Spinner bikeSelector;
+    private Button startRide, inviteFri;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,9 +47,13 @@ public class RideFragment extends Fragment {
         });
         */
         weeklySum = (ImageView) root.findViewById(R.id.image_chart);
-        if(weeklySum==null) System.out.println("null object");
         onlineSwitch = (Switch) root.findViewById(R.id.switch_online);
+        onlineSwitch.setEnabled(MainActivity.loginStatus);
         bikeSelector = (Spinner) root.findViewById(R.id.spin_bikeType);
+        startRide = (Button) root.findViewById(R.id.btn_startRiding);
+        inviteFri = (Button) root.findViewById(R.id.btn_invite);
+        inviteFri.setEnabled(MainActivity.loginStatus);
+
 
         String[] bikeTyps = new String[]{"Road", "Mountain", "City", "Other"};
         ArrayAdapter<String> aa = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, bikeTyps);

@@ -13,6 +13,7 @@
         android:orientation="horizontal" >
 
         <ImageView
+            android:id="@+id/img_port"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:background="@drawable/chart_bound1" />
@@ -37,7 +38,7 @@
                     android:layout_gravity="left"
                     android:gravity="center_vertical"
                     android:textAllCaps="false"
-                    android:text="USER_NAME"
+                    android:text="Guest"
                     android:textColor="#000000"/>
 
                 <Button
@@ -46,7 +47,7 @@
                     android:layout_height="40dp"
                     android:text="edit" />
 
-            </LinearLayout>>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/text_avg_speed"
@@ -58,7 +59,7 @@
                 android:textSize="15sp"
                 android:layout_gravity="left"
                 android:gravity="center_vertical"
-                android:text="History AVG Speed: 20 kph"
+                android:text="History AVG Speed: N/A"
                 />
 
             <TextView
@@ -71,7 +72,7 @@
                 android:textSize="15sp"
                 android:layout_gravity="left"
                 android:gravity="center_vertical"
-                android:text="Rating: 5.0/5.0"
+                android:text="Rating: N/A"
                 />
 
         </LinearLayout>
@@ -125,13 +126,13 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/btn_terms"
+            android:id="@+id/btn_login"
             android:layout_width="180dp"
             android:layout_height="65dp"
             android:layout_marginTop="8dp"
             android:textSize="20sp"
             android:textAllCaps="false"
-            android:text="Read T&amp;C"
+            android:text="Login"
             />
 
         <Button

@@ -1,17 +1,11 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.widget.Button;
 
-import com.example.myapplication.ui.dashboard.DiscoverFragment;
-import com.example.myapplication.ui.home.RideFragment;
-import com.example.myapplication.ui.notifications.MeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -20,8 +14,10 @@ import com.example.myapplication.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static boolean loginStatus = false;
     private ActivityMainBinding binding;
-    private boolean loginStatus = true;
+
+    Button loginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,33 +38,9 @@ public class MainActivity extends AppCompatActivity {
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-
-
     }
 
-    /*
-    navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selected;
-                switch (item.getItemId()) {
 
-                    case R.id.navigation_me:
-                        selected = new MeFragment();
-                        if (loginStatus==true){
-                            System.out.println("login");
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.container, selected);
-                            ft.addToBackStack(null);
-                            ft.commit();
-                            return true;
-                        }else{System.out.println("not login");}
 
-                }
-                return false;
-            }
-        });
-
-    */
 
 }

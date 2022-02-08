@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp">
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:padding="15dp"
+    tools:context=".LoginActivity">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:id="@+id/ed1"
+        android:id="@+id/username_edit_text"
         android:textSize="16sp"
         android:textColor="@color/black"
-        android:hint="User ID (Number Only)"
-        android:inputType="number"
+        android:hint="User ID"
         android:background="@drawable/chart_bound1"
         android:paddingLeft="10dp"
         android:drawablePadding="5dp"
@@ -22,11 +24,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:id="@+id/ed2"
+        android:id="@+id/password_edit_text"
         android:textSize="16sp"
         android:textColor="@color/black"
         android:hint="Password"
-        android:layout_below="@+id/ed1"
         android:layout_marginTop="10dp"
         android:inputType="textPassword"
         android:background="@drawable/chart_bound1"
@@ -35,13 +36,12 @@
         android:maxLines="1"/>
 
     <Button
-        android:id="@+id/btn1"
+        android:id="@+id/btn_login_fragment"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@+id/ed2"
+        android:layout_height="65dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
         android:text="Login"/>
 
-</RelativeLayout>
+</LinearLayout>

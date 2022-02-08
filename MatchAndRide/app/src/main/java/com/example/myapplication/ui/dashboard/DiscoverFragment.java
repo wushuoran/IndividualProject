@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentDiscoverBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -55,14 +56,18 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
         */
 
         bikeFilter = (Switch) root.findViewById(R.id.switch_filter);
+        bikeFilter.setEnabled(MainActivity.loginStatus);
         nearbyMap = (MapView) root.findViewById(R.id.map_nearby);
         addList = (Button) root.findViewById(R.id.btn_add_to_list);
+        addList.setEnabled(MainActivity.loginStatus);
         sendInv = (Button) root.findViewById(R.id.btn_send_inv);
+        sendInv.setEnabled(MainActivity.loginStatus);
         popRoute = (Button) root.findViewById(R.id.btn_pop_route);
         roadCon = (Button) root.findViewById(R.id.btn_road_con);
 
         nearbyMap.onCreate(savedInstanceState);
         nearbyMap.getMapAsync(this);
+
 
         return root;
     }
