@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button loginBtn;
 
+    public static String userName = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

@@ -5,26 +5,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_gravity="center"
+    android:gravity="center"
     android:padding="15dp"
     tools:context=".RegisterActivity">
 
-    <TextView
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="250dp"
         android:layout_height="100dp"
         android:gravity="center"
-        android:textSize="50sp"
-        android:textAllCaps="false"
-        android:text="Match &amp; Ride"
-        android:textColor="@color/black" />
+        android:layout_gravity="center"
+        android:background="@drawable/logo2"
+        android:scaleType="fitCenter"/>
 
-    <TextView
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center"
-        android:textSize="25sp"
-        android:textAllCaps="false"
-        android:text="Register Account"
-        android:textColor="@color/black" />
+        android:layout_marginTop="15dp"
+        android:id="@+id/new_user_name"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="Username"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -32,10 +36,11 @@
         android:id="@+id/new_user_email"
         android:textSize="16sp"
         android:textColor="@color/black"
-        android:hint="User E-mail"
+        android:hint="E-mail"
         android:background="@drawable/chart_bound1"
         android:paddingLeft="10dp"
         android:drawablePadding="5dp"
+        android:layout_marginTop="10dp"
         android:maxLines="1"/>
 
     <EditText
@@ -98,11 +103,12 @@
         android:id="@+id/btn_new_user_reg"
         android:layout_width="match_parent"
         android:layout_height="65dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
         android:textSize="20sp"
-        android:text="Register Account"/>
+        android:text="Create Account"/>
 
 
 </LinearLayout>
