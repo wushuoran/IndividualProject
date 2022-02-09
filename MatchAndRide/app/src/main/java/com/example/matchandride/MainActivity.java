@@ -11,11 +11,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.matchandride.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
     public static boolean loginStatus = false;
     private ActivityMainBinding binding;
+    public static FirebaseAuth mAuth;
 
     Button loginBtn;
 
@@ -28,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null){
+            loginStatus = true;
+        }
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 

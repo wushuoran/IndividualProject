@@ -1,5 +1,6 @@
 package com.example.matchandride.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentRideBinding;
@@ -45,11 +47,9 @@ public class RideFragment extends Fragment {
         */
         weeklySum = (ImageView) root.findViewById(R.id.image_chart);
         onlineSwitch = (Switch) root.findViewById(R.id.switch_online);
-        onlineSwitch.setEnabled(MainActivity.loginStatus);
         bikeSelector = (Spinner) root.findViewById(R.id.spin_bikeType);
         startRide = (Button) root.findViewById(R.id.btn_startRiding);
         inviteFri = (Button) root.findViewById(R.id.btn_invite);
-        inviteFri.setEnabled(MainActivity.loginStatus);
 
 
         String[] bikeTyps = new String[]{"Road", "Mountain", "City", "Other"};
@@ -57,7 +57,36 @@ public class RideFragment extends Fragment {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bikeSelector.setAdapter(aa);
 
+        setListeners();
+
         return root;
+    }
+
+    public void setListeners(){
+
+        onlineSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.mAuth.getCurrentUser() == null) {
+                    onlineSwitch.setChecked(false);
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }else {
+
+                }
+            }
+        });
+
+        inviteFri.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.mAuth.getCurrentUser() == null)
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                else {
+
+                }
+            }
+        });
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.matchandride;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,7 +21,13 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    /*
+    * 注册时还不会上传用户名
+    * terms conditions还没有写
+    * */
+
     private FirebaseAuth mAuth;
+    public static final String TAG = "TAG";
     private EditText newUSerName, newUserEmail, newUserPass, confirmPass;
     private CheckBox haveReadTC;
     private TextView readTC;
@@ -56,8 +63,8 @@ public class RegisterActivity extends AppCompatActivity {
                 final String userPass = newUserPass.getText().toString().trim();
                 final String confPass = confirmPass.getText().toString().trim();
 
-                if (checkInputDetails(userName, userEmail, userPass, confPass)) {
-                    if (!haveReadTC.isChecked()) {
+                if (checkInputDetails(userName, userEmail, userPass, confPass)) { // check all input details
+                    if (haveReadTC.isChecked()) { // have read the T&C
                         System.out.println(userEmail + " " + userPass);
                         mAuth.createUserWithEmailAndPassword(userEmail, userPass)
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -67,11 +74,13 @@ public class RegisterActivity extends AppCompatActivity {
                                             MainActivity.loginStatus = true;
                                             MainActivity.userName = userName;
                                             Toast.makeText(RegisterActivity.this, "Account Created", Toast.LENGTH_SHORT).show();
+                                            Log.d(TAG, "createUserWithEmail:success");
                                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                             startActivity(intent);
                                             finish();
                                         } else {
                                             Toast.makeText(RegisterActivity.this, "ERROR!" + task.getException(), Toast.LENGTH_SHORT).show();
+                                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                         }
                                     }
                                 });

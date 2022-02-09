@@ -1,5 +1,6 @@
 package com.example.matchandride.ui.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentDiscoverBinding;
@@ -19,6 +21,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
 
@@ -45,20 +48,44 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
         */
 
         bikeFilter = (Switch) root.findViewById(R.id.switch_filter);
-        bikeFilter.setEnabled(MainActivity.loginStatus);
         nearbyMap = (MapView) root.findViewById(R.id.map_nearby);
         addList = (Button) root.findViewById(R.id.btn_add_to_list);
-        addList.setEnabled(MainActivity.loginStatus);
         sendInv = (Button) root.findViewById(R.id.btn_send_inv);
-        sendInv.setEnabled(MainActivity.loginStatus);
         popRoute = (Button) root.findViewById(R.id.btn_pop_route);
         roadCon = (Button) root.findViewById(R.id.btn_road_con);
 
         nearbyMap.onCreate(savedInstanceState);
         nearbyMap.getMapAsync(this);
 
+        setListeners();
 
         return root;
+    }
+
+    public void setListeners(){
+
+        addList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.mAuth.getCurrentUser() == null)
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                else {
+
+                }
+            }
+        });
+
+        sendInv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.mAuth.getCurrentUser() == null)
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                else {
+
+                }
+            }
+        });
+
     }
 
     @Override

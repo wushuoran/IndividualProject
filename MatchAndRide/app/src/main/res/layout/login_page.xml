@@ -21,7 +21,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:id="@+id/username_edit_text"
         android:textSize="16sp"
         android:textColor="@color/black"
@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="50dp"
+        android:paddingTop="30dp"
         android:text="Forget Password? Click here" />
 
     <TextView
