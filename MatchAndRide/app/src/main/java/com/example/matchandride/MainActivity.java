@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.matchandride;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,7 +10,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.myapplication.databinding.ActivityMainBinding;
+import com.example.matchandride.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 

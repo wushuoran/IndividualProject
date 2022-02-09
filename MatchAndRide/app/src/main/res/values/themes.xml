@@ -15,4 +15,21 @@
         <!-- item name="android:backgroundTint">#4A5A71</item> -->
     </style>
 
+    <style name="Theme.MyApplicationNoBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#384380 </item>
+        <item name="colorPrimaryVariant">#384399 </item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#384380</item>
+        <item name="colorSecondaryVariant">#384399</item>
+        <item name="colorOnSecondary">#000000</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name = "android:windowActionBar">false</item>
+        <item name = "android:windowNoTitle">true</item>
+        <!-- Customize your theme here. -->
+        <!-- item name="android:backgroundTint">#4A5A71</item> -->
+    </style>
+
 </resources>

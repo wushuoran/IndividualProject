@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:padding="15dp"
+    tools:context=".RegisterActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:textSize="50sp"
+        android:textAllCaps="false"
+        android:text="Match &amp; Ride"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textAllCaps="false"
+        android:text="Register Account"
+        android:textColor="@color/black" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/new_user_email"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="User E-mail"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/new_user_password"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="Password"
+        android:layout_marginTop="10dp"
+        android:inputType="textPassword"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/password_confirm"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="Confirm Password"
+        android:layout_marginTop="10dp"
+        android:inputType="textPassword"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:gravity="center">
+
+        <CheckBox
+            android:id="@+id/have_read_tc"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I agreed with the "
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/terms_and_conditions_reg_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:text="Terms &amp; Conditions"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_new_user_reg"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:textSize="20sp"
+        android:text="Register Account"/>
+
+
+</LinearLayout>

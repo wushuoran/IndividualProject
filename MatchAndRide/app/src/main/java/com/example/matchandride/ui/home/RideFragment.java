@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.home;
+package com.example.matchandride.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,17 +9,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
-import com.example.myapplication.databinding.FragmentRideBinding;
+import com.example.matchandride.MainActivity;
+import com.example.matchandride.R;
+import com.example.matchandride.databinding.FragmentRideBinding;
 
 public class RideFragment extends Fragment {
 

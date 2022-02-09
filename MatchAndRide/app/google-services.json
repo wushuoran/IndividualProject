@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "964061045856",
+    "project_id": "matchandride",
+    "storage_bucket": "matchandride.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964061045856:android:6ec7c3931172fad54dcf05",
+        "android_client_info": {
+          "package_name": "com.example.matchandride"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "964061045856-gubofnas4shaerfamcb6qh35o9c37c0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwqPo0wAcDqsK4SL1-Pi5tHpM627Yvkdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "964061045856-gubofnas4shaerfamcb6qh35o9c37c0g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

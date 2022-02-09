@@ -10,13 +10,15 @@
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/drawable/chart_bound1.xml" value="0.325" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.5296296296296297" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_record_ride.xml" value="0.25" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_dashboard.xml" value="0.22" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_discover.xml" value="0.25" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_login.xml" value="0.390625" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_me.xml" value="0.30842391304347827" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_ride.xml" value="0.390625" />
-        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/login_page.xml" value="0.5371376811594203" />
+        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/login_page.xml" value="0.25" />
+        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/register_page.xml" value="0.327445652173913" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/menu/bottom_nav_menu.xml" value="0.5536458333333333" />
       </map>
     </option>

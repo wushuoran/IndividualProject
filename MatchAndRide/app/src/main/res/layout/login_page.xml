@@ -9,13 +9,22 @@
     android:padding="15dp"
     tools:context=".LoginActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:textSize="50sp"
+        android:textAllCaps="false"
+        android:text="Match &amp; Ride"
+        android:textColor="@color/black" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/username_edit_text"
         android:textSize="16sp"
         android:textColor="@color/black"
-        android:hint="User ID"
+        android:hint="User E-mail"
         android:background="@drawable/chart_bound1"
         android:paddingLeft="10dp"
         android:drawablePadding="5dp"
@@ -36,12 +45,39 @@
         android:maxLines="1"/>
 
     <Button
-        android:id="@+id/btn_login_fragment"
+        android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
+        android:textSize="20sp"
         android:text="Login"/>
+
+    <Button
+        android:id="@+id/btn_regi"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:textSize="20sp"
+        android:text="Register"/>
+
+    <TextView
+        android:id="@+id/forget_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="50dp"
+        android:text="Forget Password? Click here" />
+
+    <TextView
+        android:id="@+id/terms_and_conditions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="15dp"
+        android:text="Our Terms &amp; Conditions" />
 
 </LinearLayout>

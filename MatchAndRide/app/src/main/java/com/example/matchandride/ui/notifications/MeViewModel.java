@@ -1,16 +1,16 @@
-package com.example.myapplication.ui.dashboard;
+package com.example.matchandride.ui.notifications;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class DiscoverViewModel extends ViewModel {
+public class MeViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public DiscoverViewModel() {
+    public MeViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        mText.setValue("This is notifications fragment");
     }
 
     public LiveData<String> getText() {

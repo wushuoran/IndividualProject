@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.matchandride;
 
 import android.content.Context;
 
