@@ -2,6 +2,7 @@ package com.example.matchandride;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,18 +16,26 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
     /*
-    * 注册时还不会上传用户名
-    * terms conditions还没有写
+    * 注册时还不会上传用户名 _ finished
+    * terms conditions还没有写 _ 目前可以跳转界面
     * */
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mStore;
     public static final String TAG = "TAG";
     private EditText newUSerName, newUserEmail, newUserPass, confirmPass;
     private CheckBox haveReadTC;
@@ -39,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_page);
         mAuth = FirebaseAuth.getInstance();
+        mStore = FirebaseFirestore.getInstance();
 
         newUSerName = (EditText) findViewById(R.id.new_user_name);
         newUserEmail = (EditText) findViewById(R.id.new_user_email);
@@ -47,6 +57,14 @@ public class RegisterActivity extends AppCompatActivity {
         haveReadTC = (CheckBox) findViewById(R.id.have_read_tc);
         readTC = (TextView) findViewById(R.id.terms_and_conditions_reg_page);
         regiAcc = (Button) findViewById(R.id.btn_new_user_reg);
+
+        readTC.setPaintFlags(readTC.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+        readTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(RegisterActivity.this, TermsActivity.class));
+            }
+        });
 
         setRegiAccListener();
 
@@ -65,14 +83,25 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (checkInputDetails(userName, userEmail, userPass, confPass)) { // check all input details
                     if (haveReadTC.isChecked()) { // have read the T&C
-                        System.out.println(userEmail + " " + userPass);
+                        //System.out.println(userEmail + " " + userPass);
                         mAuth.createUserWithEmailAndPassword(userEmail, userPass)
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
                                             MainActivity.loginStatus = true;
-                                            MainActivity.userName = userName;
+                                            Map<String,Object> userInfo = new HashMap<>();
+                                            userInfo.put("Username", userName);
+                                            userInfo.put("Email", userEmail);
+                                            mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).set(userInfo)
+                                                    .addOnCompleteListener((OnCompleteListener<Void>) (aVoid) -> {
+                                                         Log.d(TAG, "DocumentSnapshot added");
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w(TAG, "Error adding document", e);
+                                                        }
+                                                    });
                                             Toast.makeText(RegisterActivity.this, "Account Created", Toast.LENGTH_SHORT).show();
                                             Log.d(TAG, "createUserWithEmail:success");
                                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);

@@ -12,16 +12,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.matchandride.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
     public static boolean loginStatus = false;
     private ActivityMainBinding binding;
     public static FirebaseAuth mAuth;
-
-    Button loginBtn;
-
-    public static String userName = null;
+    public static FirebaseFirestore mStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
+        mStore = FirebaseFirestore.getInstance();
         if (mAuth.getCurrentUser() != null){
             loginStatus = true;
         }

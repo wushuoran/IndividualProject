@@ -2,6 +2,7 @@ package com.example.matchandride.ui.notifications;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,21 @@ import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentMeBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Source;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MeFragment extends Fragment {
 
     private MeViewModel meViewModel;
     private FragmentMeBinding binding;
+    public static final String TAG = "TAG";
     Button editPro, manageRide, friReq, friList, accSetting, loginBtn;
     ImageView portrait;
     TextView userName, avgSpeed, rating;
@@ -46,14 +56,37 @@ public class MeFragment extends Fragment {
         avgSpeed = (TextView) root.findViewById(R.id.text_avg_speed);
         rating = (TextView) root.findViewById(R.id.text_user_rating);
 
-        if(MainActivity.mAuth.getCurrentUser() != null){
-            FirebaseUser currentUser = MainActivity.mAuth.getCurrentUser();
-            userName.setText(currentUser.getEmail());
-
-        }
-
+        if(MainActivity.mAuth.getCurrentUser() != null) updateUserInfo();
         setListeners();
+
         return root;
+
+    }
+
+    public void updateUserInfo(){
+
+        FirebaseUser currentUser = MainActivity.mAuth.getCurrentUser();
+        DocumentReference dRef = MainActivity.mStore.collection("UserNames").document(currentUser.getUid());
+        String[] userInfo = new String[2];
+        dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        userInfo[0] = document.getString("Username");
+                        /* GET&SET MORE INFO HERE, AVG SPEED, RATING, .... */
+                        userName.setText(userInfo[0]);
+                        Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
+                        System.out.println( "Current username: " + userInfo[0]);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
 
     }
 
