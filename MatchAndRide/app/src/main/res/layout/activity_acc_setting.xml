@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textSize="35sp"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:text="Account Settings"/>
+
+    <Button
+        android:id="@+id/btn_change_username_acc"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:text="Change Username"/>
+
+    <Button
+        android:id="@+id/btn_change_pic_acc"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:text="Change Profile Picture"/>
+
+    <Button
+        android:id="@+id/btn_change_password_acc"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:text="Change Password"/>
+
+    <Button
+        android:id="@+id/btn_change_email_acc"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:text="Change Email"/>
+
+    <Button
+        android:id="@+id/btn_read_terms_acc"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:text="Terms &amp; Conditions"/>
+
+</LinearLayout>

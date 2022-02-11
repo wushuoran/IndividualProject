@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.matchandride.AccSettingActivity;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
@@ -99,22 +100,13 @@ public class MeFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     startActivity(intent);
                 }else{
+                    startActivity(new Intent(getActivity(), MainActivity.class));
                     MainActivity.mAuth.signOut();
                     Toast.makeText(getActivity(), "Logged Out", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
-
-        /*editPro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (MainActivity.mAuth.getCurrentUser() == null)
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                else {
-
-                }
-            }
-        });*/
 
         friReq.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +136,7 @@ public class MeFragment extends Fragment {
                 if (MainActivity.mAuth.getCurrentUser() == null)
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 else {
-
+                    startActivity(new Intent(getActivity(), AccSettingActivity.class));
                 }
             }
         });

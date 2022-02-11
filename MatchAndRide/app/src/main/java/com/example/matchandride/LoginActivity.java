@@ -84,9 +84,18 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String userEmail = usernameEditText.getText().toString().trim();
                 if (checkInputDetails(userEmail)){
-                    ChangePassActivity.emailToResetPass = userEmail;
-                    Intent intent = new Intent(LoginActivity.this, ChangePassActivity.class);
-                    startActivity(intent);
+                    mAuth.sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                Log.d(TAG, "sendPasswordResetEmail:success");
+                                Toast.makeText(LoginActivity.this, "Password Reset Email Sent.", Toast.LENGTH_LONG).show();
+                            }else{
+                                Log.d(TAG, "sendPasswordResetEmail:failure"+task.getException());
+                                Toast.makeText(LoginActivity.this, "ERROR Sending Email!" + task.getException(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }else{
                     Toast.makeText(LoginActivity.this, "Please enter your email in the field first", Toast.LENGTH_LONG).show();
                 }

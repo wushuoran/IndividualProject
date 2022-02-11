@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/logo2"
+        android:scaleType="fitCenter"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:text="Current Email is : "/>
+
+    <TextView
+        android:id="@+id/text_current_email_change_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:text="USER_EMAIL"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/email_change"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="New Email"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/email_change_confirm"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:hint="Confirm New Email"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/chart_bound1"
+        android:paddingLeft="10dp"
+        android:drawablePadding="5dp"
+        android:maxLines="1"/>
+
+    <Button
+        android:id="@+id/btn_change_email_change_email"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:textSize="20sp"
+        android:text="Change Email"/>
+
+</LinearLayout>
