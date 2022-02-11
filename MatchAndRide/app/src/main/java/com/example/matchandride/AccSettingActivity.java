@@ -11,6 +11,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class AccSettingActivity extends AppCompatActivity {
 
+    /*
+    * 还不能改头像
+    * terms还没写
+    * */
+
     private Button changeUsername, changePic, changePass, changeEmail, readTC;
     private FirebaseAuth mAuth;
 
@@ -32,6 +37,14 @@ public class AccSettingActivity extends AppCompatActivity {
 
     public void setListeners(){
 
+        changeUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AccSettingActivity.this, ChangeUsernameActivity.class);
+                startActivity(intent);
+            }
+        });
+
         changePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,6 +61,13 @@ public class AccSettingActivity extends AppCompatActivity {
             }
         });
 
+        readTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AccSettingActivity.this, TermsActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

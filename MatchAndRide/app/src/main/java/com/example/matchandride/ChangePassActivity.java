@@ -21,7 +21,6 @@ public class ChangePassActivity extends AppCompatActivity {
 
     public FirebaseAuth mAuth;
     public static final String TAG = "TAG";
-    //public static String emailToResetPass;
     private EditText newPass, confNewPass;
     private Button resetPass;
     private TextView currentEmail;
