@@ -16,7 +16,9 @@
             android:id="@+id/img_port"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:background="@drawable/chart_bound1" />
+            android:background="@drawable/pic_bound"
+            android:scaleType="centerCrop"
+             />
 
         <LinearLayout
             android:layout_width="match_parent"

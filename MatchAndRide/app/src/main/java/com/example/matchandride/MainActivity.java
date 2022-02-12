@@ -13,6 +13,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.matchandride.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public static FirebaseAuth mAuth;
     public static FirebaseFirestore mStore;
+    public static FirebaseStorage mStra;
+    public static StorageReference straRef;
 
 
     @Override
@@ -31,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
+        mStra = FirebaseStorage.getInstance();
+        straRef = mStra.getReference();
+
         if (mAuth.getCurrentUser() != null){
             loginStatus = true;
         }
