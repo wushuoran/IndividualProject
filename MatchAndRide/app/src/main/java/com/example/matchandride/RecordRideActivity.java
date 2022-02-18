@@ -53,7 +53,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
     /*
     * 还不能保存ride 不知道如何保存轨迹
     * sprint2 要共享位置
-    *
+    * 结束之后跳转总结页并让用户决定是否保存
     * */
 
     @Override
