@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:keepScreenOn="true">
 
 
     <LinearLayout
@@ -20,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:textAllCaps="false"
             android:text="Time"/>
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:gravity="center"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:textAllCaps="false"
             android:text="Distance"/>
@@ -44,17 +45,14 @@
         android:layout_gravity="center"
         android:gravity="center">
 
-        <TextView
-            android:id="@+id/txt_time"
+        <Chronometer
+            android:id="@+id/chr_time"
             android:layout_width="150dp"
             android:layout_height="70dp"
             android:layout_marginRight="5dp"
             android:background="@drawable/chart_bound1"
             android:gravity="center"
-            android:textSize="25sp"
-            android:textColor="@color/black"
-            android:textAllCaps="false"
-            android:text="--:--:--"/>
+            android:textSize="25sp"/>
 
         <TextView
             android:id="@+id/txt_distance"
@@ -82,7 +80,7 @@
             android:layout_width="310dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:textAllCaps="false"
             android:text="Current Speed (kph)"/>
@@ -90,13 +88,13 @@
         <TextView
             android:id="@+id/txt_cur_spd"
             android:layout_width="310dp"
-            android:layout_height="100dp"
+            android:layout_height="115dp"
             android:background="@drawable/chart_bound1"
             android:gravity="center"
-            android:textSize="40sp"
+            android:textSize="80sp"
             android:textColor="@color/black"
             android:textAllCaps="false"
-            android:text="----"/>
+            android:text="0"/>
 
     </LinearLayout>
 
@@ -113,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:textAllCaps="false"
             android:text="Climb"/>
@@ -123,7 +121,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:gravity="center"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:textAllCaps="false"
             android:text="AVG Spd"/>
@@ -190,6 +188,7 @@
             android:layout_height="70dp"
             android:layout_marginTop="5dp"
             android:textSize="30sp"
+            android:textAllCaps="false"
             android:text="Pause"/>
 
         <Button
@@ -198,6 +197,7 @@
             android:layout_height="70dp"
             android:layout_marginTop="5dp"
             android:textSize="30sp"
+            android:textAllCaps="false"
             android:text="End Ride"/>
 
     </LinearLayout>
