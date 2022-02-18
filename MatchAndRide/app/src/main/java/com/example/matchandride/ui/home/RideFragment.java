@@ -1,6 +1,12 @@
 package com.example.matchandride.ui.home;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +18,19 @@ import android.widget.Spinner;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
+import com.example.matchandride.RecordRideActivity;
 import com.example.matchandride.databinding.FragmentRideBinding;
 
+
 public class RideFragment extends Fragment {
+
 
     private RideViewModel rideViewModel;
     private FragmentRideBinding binding;
@@ -51,7 +61,6 @@ public class RideFragment extends Fragment {
         startRide = (Button) root.findViewById(R.id.btn_startRiding);
         inviteFri = (Button) root.findViewById(R.id.btn_invite);
 
-
         String[] bikeTyps = new String[]{"Road", "Mountain", "City", "Other"};
         ArrayAdapter<String> aa = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, bikeTyps);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -73,6 +82,13 @@ public class RideFragment extends Fragment {
                 }else {
 
                 }
+            }
+        });
+
+        startRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), RecordRideActivity.class));
             }
         });
 

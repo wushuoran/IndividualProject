@@ -4,25 +4,202 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="15dp"
+    android:layout_gravity="center">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="Time"/>
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="Distance"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/txt_time"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="--:--:--"/>
+
+        <TextView
+            android:id="@+id/txt_distance"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="- Km"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="Current Speed (kph)"/>
+
+        <TextView
+            android:id="@+id/txt_cur_spd"
+            android:layout_width="310dp"
+            android:layout_height="100dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="40sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="----"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="Climb"/>
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="AVG Spd"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/txt_climb"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="--"/>
+
+        <TextView
+            android:id="@+id/txt_avg_spd"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="--"/>
+
+    </LinearLayout>
+
 
     <com.google.android.gms.maps.MapView
-        android:id="@+id/map_nearby"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:id="@+id/map_record"
+        android:layout_width="310dp"
+        android:layout_height="150dp"
         android:layout_marginTop="10dp"
+        android:layout_gravity="center"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:clickable="true"
         map:uiCompass="true"
         map:zOrderOnTop="true"
         />
 
-    <GridLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:gravity="center">
 
+        <Button
+            android:id="@+id/btn_pau_con"
+            android:layout_width="310dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:textSize="30sp"
+            android:text="Pause"/>
 
-    </GridLayout>
+        <Button
+            android:id="@+id/btn_end_ride"
+            android:layout_width="310dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:textSize="30sp"
+            android:text="End Ride"/>
+
+    </LinearLayout>
 
 </LinearLayout>
