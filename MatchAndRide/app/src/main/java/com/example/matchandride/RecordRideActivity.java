@@ -1,9 +1,8 @@
 package com.example.matchandride;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,8 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -24,14 +23,10 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecordRideActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -43,7 +38,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
     private LocationManager locationManager;
     private LocationListener locationListener;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private List<LatLng> routePoints;
+    private ArrayList<LatLng> routePoints;
     private double lastAltitude = -10000;
     private double totalClimb = 0;
     private LatLng lastLat;
@@ -106,8 +101,23 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
         endRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(RecordRideActivity.this, "Long Press to End Ride", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        endRide.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
                 onStop();
+                Intent intent = new Intent(RecordRideActivity.this, SaveRideActivity.class);
+                intent.putExtra("timeTotal", chrTimer.getText().toString());
+                intent.putExtra("disTotal", txtDis.getText().toString());
+                intent.putExtra("climbTotal", txtClimb.getText().toString());
+                intent.putExtra("avgSpd", txtAvgSpd.getText().toString());
+                intent.putParcelableArrayListExtra("routePoints", routePoints);
+                startActivity(intent);
                 finish();
+                return false;
             }
         });
 
@@ -132,7 +142,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                     LatLng currentLat = new LatLng(latitude, longitude);
                     // get the speed
                     if (location.hasSpeed()){
-                        txtCurSpd.setText(String.format("%.2f", location.getSpeed()));
+                        txtCurSpd.setText(String.format("%.2f", (location.getSpeed())*3.6));
                     }
                     if (location != null){
                         System.out.println(latitude + " " + longitude);
@@ -158,9 +168,8 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                             if (totalDistance<1000) txtDis.setText(String.format("%.0f", totalDistance)+"m"); // display unit is meter if total<1km
                             else txtDis.setText(String.format("%.2f", totalDistance/1000)+"km");
                             lastLat = currentLat; // last LatLng is the current one
-                            long timePassed = chrTimer.getBase();
-                            double timePassedToHrs = (double) (timePassed/3600000);
-                            double avgSpeed = (double) ((totalDistance/1000)/timePassedToHrs);
+                            int timePassed = convertTimeToSecs(chrTimer.getText().toString());
+                            double avgSpeed = (double) ((totalDistance/timePassed)*3.6);
                             txtAvgSpd.setText(String.format("%.2f", avgSpeed));
                         }else {
                             lastLat = currentLat;
@@ -170,8 +179,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                         routePoints.add(currentLat);
                         Polyline route = gMap.addPolyline(new PolylineOptions());
                         route.setPoints(routePoints);
-                        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(location.getLatitude(), location.getLongitude()), 13));
+                        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
                         CameraPosition cameraPosition = new CameraPosition.Builder()
                                 // set the center of the map to user's location
                                 .target(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -200,6 +208,19 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
 
     }
 
+    public int convertTimeToSecs(String time){
+        String[] splitTime = time.split(":");
+        int finaltime = 0;
+        if (splitTime.length == 1)
+            finaltime = Integer.valueOf(splitTime[0]);
+        else if (splitTime.length == 2)
+            finaltime = 60*Integer.valueOf(splitTime[0]) + Integer.valueOf(splitTime[1]);
+        else if (splitTime.length == 3)
+            finaltime = 60*60*Integer.valueOf(splitTime[0]) + 60*Integer.valueOf(splitTime[1]) + Integer.valueOf(splitTime[2]);
+        System.out.println(finaltime);
+        return finaltime;
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
@@ -218,7 +239,9 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onPause() {
         locationManager.removeUpdates(locationListener);
-        chrTimer.stop();
+        lastAltitude = -10000; // do not calculate the altitude rised during pause period
+        lastLat = null;        // do not calculate the distance travelled during pause period
+        chrTimer.stop();       // stop the timer
         timeStopped = chrTimer.getBase() - SystemClock.elapsedRealtime();
         super.onPause();
         recordMap.onPause();

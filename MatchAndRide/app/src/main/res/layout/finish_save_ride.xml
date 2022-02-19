@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:layout_gravity="center"
+    android:keepScreenOn="true">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="Time"/>
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="Distance"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/txt_time_final"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="25sp"/>
+
+        <TextView
+            android:id="@+id/txt_distance_final"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="- Km"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="Climb"/>
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="AVG Spd"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/txt_climb_final"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="--"/>
+
+        <TextView
+            android:id="@+id/txt_avg_spd_final"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/chart_bound1"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:text="--"/>
+
+    </LinearLayout>
+
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_record_final"
+        android:layout_width="310dp"
+        android:layout_height="310dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:clickable="true"
+        map:uiCompass="true"
+        map:zOrderOnTop="true"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="310dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:textSize="30sp"
+            android:textAllCaps="false"
+            android:text="Save Ride"/>
+
+        <TextView
+            android:id="@+id/txt_discard"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:text="Discard Ride"/>
+
+    </LinearLayout>
+
+</LinearLayout>
