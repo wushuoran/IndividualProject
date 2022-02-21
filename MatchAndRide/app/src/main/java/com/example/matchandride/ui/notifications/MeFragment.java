@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.matchandride.AccSettingActivity;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
+import com.example.matchandride.ManageRideActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentMeBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -180,6 +181,13 @@ public class MeFragment extends Fragment {
             }
         });
 
+        manageRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ManageRideActivity.class));
+            }
+        });
+
     }
 
 
@@ -188,5 +196,6 @@ public class MeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
 
 }

@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -52,10 +53,6 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
     private FirebaseStorage mStra;
     private StorageReference straRef;
     public static final String TAG = "TAG";
-
-    /*
-    * 储存本地的功能还没写
-    * */
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -144,16 +141,15 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
         SimpleDateFormat formatter2 = new SimpleDateFormat("dd-MM-yyyy");
         Date date2 = new Date();
         String date = formatter2.format(date2);
+        Map<String, Object> rideInfo = new HashMap<>();
+        rideInfo.put("Duration", timeMills);
+        rideInfo.put("Distance", distance);
+        rideInfo.put("Climb", climb);
+        rideInfo.put("AVGspd", avgspd);
         if (mAuth.getCurrentUser() != null){ // user has logged in, ride should be stored at Firebase
             // store ride basic info into Firebase
-            Map<String, Object> rideInfo = new HashMap<>();
-            rideInfo.put("Duration", timeMills);
-            rideInfo.put("Distance", distance);
-            rideInfo.put("Climb", climb);
-            rideInfo.put("AVGspd", avgspd);
-            mStore.collection("UserRides")
-                    .document(mAuth.getCurrentUser().getUid())
-                    .collection(date).document(dateTime).set(rideInfo)
+            mStore.collection("Rides-" + mAuth.getCurrentUser().getUid())
+                    .document(dateTime).set(rideInfo)
                     .addOnCompleteListener((OnCompleteListener<Void>) (aVoid) -> {
                         Log.d(TAG, "DocumentSnapshot added");
                     }).addOnFailureListener(new OnFailureListener() {
@@ -187,8 +183,30 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
             }catch (Exception e){e.printStackTrace();}
             Toast.makeText(SaveRideActivity.this, "Ride Uploaded", Toast.LENGTH_SHORT).show();
         }else{ // user has not login, store the data in local storage
-            File file = getFilesDir();
-
+            File fileInfo = new File(getApplicationContext().getFilesDir(), dateTime + "info");
+            File fileRoute = new File(getApplicationContext().getFilesDir(), dateTime + "route");
+            try {
+                BufferedWriter bf = new BufferedWriter(new FileWriter(fileInfo));
+                for (Map.Entry<String, Object> entry : rideInfo.entrySet()) {
+                    bf.write(entry.getKey() + ":" + entry.getValue().toString());
+                    bf.newLine();
+                }
+                bf.flush();
+                bf.close();
+            } catch (IOException e) { e.printStackTrace(); }
+            try{
+                FileWriter fw = new FileWriter(fileRoute);
+                BufferedWriter bw = new BufferedWriter(fw);
+                if (!routePoints.isEmpty()){
+                    for (LatLng point : routePoints){
+                        bw.write(point.latitude + "," + point.longitude);
+                        bw.newLine();
+                    }
+                    bw.close();
+                    fw.close();
+                }
+            }catch (Exception e){e.printStackTrace();}
+            Toast.makeText(SaveRideActivity.this, "Ride Saved to Local Storage", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -205,7 +223,9 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                 boundsBuilder.include(latLngPoint);
             int routePadding = 100;
             LatLngBounds latLngBounds = boundsBuilder.build();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding));
+            try {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding));
+            }catch (Exception e){e.printStackTrace();}
         }
     }
 

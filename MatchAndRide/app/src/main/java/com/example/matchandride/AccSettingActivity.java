@@ -25,7 +25,6 @@ import com.google.firebase.storage.UploadTask;
 public class AccSettingActivity extends AppCompatActivity {
 
     /*
-    * 还不能改头像
     * terms还没写
     * */
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textSize="35sp"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:text="Manage Rides"/>
+
+    <ScrollView
+        android:id="@+id/sv_rides"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tooltipText="Ride History">
+
+        <LinearLayout
+            android:id="@+id/sv_items_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp">
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -24,7 +24,7 @@
             android:textSize="20sp"
             android:textColor="@color/black"
             android:textAllCaps="false"
-            android:text="Time"/>
+            android:text="Duration"/>
 
         <TextView
             android:layout_width="150dp"

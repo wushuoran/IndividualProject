@@ -90,6 +90,16 @@
             android:theme="@style/Theme.MyApplicationNoBar">
         </activity>
 
+        <activity
+            android:name="com.example.matchandride.ManageRideActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
+        <activity
+            android:name="com.example.matchandride.ViewRideActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
     </application>
 
 </manifest>
