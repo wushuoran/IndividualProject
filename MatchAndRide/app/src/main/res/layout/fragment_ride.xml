@@ -93,7 +93,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:textAllCaps="false"
-        android:textSize="25sp"
+        android:textSize="23sp"
         android:text="Start Riding"
         />
 
@@ -103,8 +103,26 @@
         android:layout_height="65dp"
         android:layout_gravity="center"
         android:textAllCaps="false"
-        android:textSize="25sp"
+        android:textSize="23sp"
         android:text="Invite Friend"
         />
+
+    <Button
+        android:id="@+id/btn_pop_route"
+        android:layout_width="250dp"
+        android:layout_height="65dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:textSize="23sp"
+        android:text="Popular Routes" />
+
+    <Button
+        android:id="@+id/btn_road_con"
+        android:layout_width="250dp"
+        android:layout_height="65dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:textSize="23sp"
+        android:text="Road Condition" />
 
 </LinearLayout>

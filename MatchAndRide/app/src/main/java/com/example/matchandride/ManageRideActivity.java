@@ -25,6 +25,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.File;
 import java.util.ArrayList;
 
+/*
+* About rides in internal storage (local) and Firebase (cloud):
+* Once logged in, user can manually upload the local rides to cloud
+* Once local ride is uploaded to cloud, the local files will be deleted.
+* */
 
 public class ManageRideActivity extends AppCompatActivity {
 

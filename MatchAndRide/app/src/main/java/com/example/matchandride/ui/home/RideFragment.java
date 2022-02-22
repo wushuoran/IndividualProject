@@ -37,7 +37,7 @@ public class RideFragment extends Fragment {
     private ImageView weeklySum;
     private Switch onlineSwitch;
     private Spinner bikeSelector;
-    private Button startRide, inviteFri;
+    private Button startRide, inviteFri, popRoute, roadCon;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +60,8 @@ public class RideFragment extends Fragment {
         bikeSelector = (Spinner) root.findViewById(R.id.spin_bikeType);
         startRide = (Button) root.findViewById(R.id.btn_startRiding);
         inviteFri = (Button) root.findViewById(R.id.btn_invite);
+        popRoute = (Button) root.findViewById(R.id.btn_pop_route);
+        roadCon = (Button) root.findViewById(R.id.btn_road_con);
 
         String[] bikeTyps = new String[]{"Road", "Mountain", "City", "Other"};
         ArrayAdapter<String> aa = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, bikeTyps);

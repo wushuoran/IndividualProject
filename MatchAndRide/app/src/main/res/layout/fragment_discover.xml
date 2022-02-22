@@ -48,7 +48,7 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/map_nearby"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="500dp"
         android:layout_marginTop="10dp"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:clickable="true"
@@ -82,25 +82,9 @@
             android:text="Send \n Invitation" />
 
 
-    </LinearLayout>>
+    </LinearLayout>
 
 
-    <Button
-        android:id="@+id/btn_pop_route"
-        android:layout_width="360dp"
-        android:layout_height="65dp"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:textSize="25sp"
-        android:text="Popular Routes" />
 
-    <Button
-        android:id="@+id/btn_road_con"
-        android:layout_width="360dp"
-        android:layout_height="65dp"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:textSize="25sp"
-        android:text="Road Condition" />
 
 </LinearLayout>
