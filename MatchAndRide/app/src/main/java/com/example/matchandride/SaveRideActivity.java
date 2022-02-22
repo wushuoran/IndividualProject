@@ -186,13 +186,16 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
             File fileInfo = new File(getApplicationContext().getFilesDir(), dateTime + "info");
             File fileRoute = new File(getApplicationContext().getFilesDir(), dateTime + "route");
             try {
-                BufferedWriter bf = new BufferedWriter(new FileWriter(fileInfo));
-                for (Map.Entry<String, Object> entry : rideInfo.entrySet()) {
-                    bf.write(entry.getKey() + ":" + entry.getValue().toString());
+                FileWriter fw = new FileWriter(fileInfo);
+                BufferedWriter bf = new BufferedWriter(fw);
+                for (String entry : rideInfo.keySet()) {
+                    bf.write(entry + ":" + rideInfo.get(entry));
+                    //System.out.println("Write " + entry + ":" + rideInfo.get(entry));
                     bf.newLine();
                 }
-                bf.flush();
+                //bf.flush();
                 bf.close();
+                fw.close();
             } catch (IOException e) { e.printStackTrace(); }
             try{
                 FileWriter fw = new FileWriter(fileRoute);

@@ -3,10 +3,16 @@ package com.example.matchandride;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,16 +43,21 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private TextView timeTotal, disTotal, climbTotal, avgSpd, discardRide, txtDate;
+    private String timeMills, distance, climb, avgspd;
     private MapView traceMap;
     private String dateTime, cloudStoragePath, collectionName;
+    private LinearLayout btns;
+    private ViewGroup.MarginLayoutParams params;
     final String[] rideInfo = new String[4];
     private ArrayList<LatLng> routePoints;
     private FirebaseAuth mAuth;
@@ -54,7 +65,9 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
     private FirebaseStorage mStra;
     private StorageReference straRef;
     private String username;
+    private String isLocal;
     public static final String TAG = "TAG";
+    private String[] localRideInfo = new String[4];
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -66,6 +79,15 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
         straRef = mStra.getReference();
         try {username = mAuth.getCurrentUser().getUid();}catch (Exception e){}
 
+        btns = (LinearLayout) findViewById(R.id.linear_layout_btns);
+        params = (ViewGroup.MarginLayoutParams) btns.getLayoutParams();
+        timeTotal = (TextView) findViewById(R.id.txt_time_final_v);
+        disTotal = (TextView) findViewById(R.id.txt_distance_final_v);
+        climbTotal = (TextView) findViewById(R.id.txt_climb_final_v);
+        avgSpd = (TextView) findViewById(R.id.txt_avg_spd_final_v);
+        discardRide = (TextView) findViewById(R.id.txt_del_ride);
+        txtDate = (TextView) findViewById(R.id.txt_date);
+        traceMap = (MapView) findViewById(R.id.map_record_final_v);
 
         if (mAuth.getCurrentUser() != null) {
             try {
@@ -82,13 +104,6 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
             }
         }
 
-        timeTotal = (TextView) findViewById(R.id.txt_time_final_v);
-        disTotal = (TextView) findViewById(R.id.txt_distance_final_v);
-        climbTotal = (TextView) findViewById(R.id.txt_climb_final_v);
-        avgSpd = (TextView) findViewById(R.id.txt_avg_spd_final_v);
-        discardRide = (TextView) findViewById(R.id.txt_del_ride);
-        txtDate = (TextView) findViewById(R.id.txt_date);
-        traceMap = (MapView) findViewById(R.id.map_record_final_v);
 
 
         txtDate.setText(dateTime);
@@ -111,7 +126,7 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
                         .setTitle("Confirm").setCancelable(true);
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (username != null){
+                        if (username != null && isLocal.equals("cloud")){
                             mStore.collection(collectionName).document(dateTime).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -159,45 +174,54 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
     public void getRideDataFirebase() throws IOException {
         Bundle extras = this.getIntent().getExtras();
         this.dateTime = (String) extras.get("dateTime");
-        this.collectionName = "Rides-"+this.username;
-        DocumentReference dRef = mStore.collection(collectionName).document(dateTime);
-        // get ride info
-        dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    rideInfo[0] = document.get("Duration").toString();
-                    rideInfo[1] = document.get("Distance").toString();
-                    rideInfo[2] = document.get("Climb").toString();
-                    rideInfo[3] = document.get("AVGspd").toString();
-                    timeTotal.setText(rideInfo[0]);
-                    disTotal.setText(rideInfo[1]);
-                    climbTotal.setText(rideInfo[2]);
-                    avgSpd.setText(rideInfo[3]);
-                    Log.d(TAG, "Cached document data: ");
-                } else {
-                    Log.d(TAG, "Cached get failed: ", task.getException());
+        this.isLocal = (String) extras.get("isLocal");
+        if (this.isLocal.equals("cloud")){
+            this.collectionName = "Rides-"+this.username;
+            DocumentReference dRef = mStore.collection(collectionName).document(dateTime);
+            // get ride info
+            dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        try{
+                            rideInfo[0] = document.get("Duration").toString();
+                            rideInfo[1] = document.get("Distance").toString();
+                            rideInfo[2] = document.get("Climb").toString();
+                            rideInfo[3] = document.get("AVGspd").toString();
+                            timeTotal.setText(rideInfo[0]);
+                            disTotal.setText(rideInfo[1]);
+                            climbTotal.setText(rideInfo[2]);
+                            avgSpd.setText(rideInfo[3]);
+                            Log.d(TAG, "Cached document data: ");
+                        }catch(NullPointerException e){e.printStackTrace();}
+
+                    } else {
+                        Log.d(TAG, "Cached get failed: ", task.getException());
+                    }
                 }
-            }
-        });
-        // get location (route) file
-        this.cloudStoragePath = "UserRideHistory/"+ username + "_" + dateTime + ".csv";
-        System.out.println(cloudStoragePath);
-        File tempFile = File.createTempFile("locations", "csv");
-        straRef.child(cloudStoragePath).getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.d(TAG, "Location File Obtained");
-                try {getLatLngFromCSV(tempFile);} catch(Exception e){e.printStackTrace();}
-            }
-        });
+            });
+            // get location (route) file
+            this.cloudStoragePath = "UserRideHistory/"+ username + "_" + dateTime + ".csv";
+            System.out.println(cloudStoragePath);
+            File tempFile = File.createTempFile("locations", "csv");
+            straRef.child(cloudStoragePath).getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Log.d(TAG, "Location File Obtained");
+                    try {getLatLngFromCSV(tempFile);} catch(Exception e){e.printStackTrace();}
+                }
+            });
+        }else{
+            getRideDataLocal();
+        }
 
     }
 
     public void getRideDataLocal() throws IOException {
         Bundle extras = this.getIntent().getExtras();
         this.dateTime = (String) extras.get("dateTime");
+        this.isLocal = (String) extras.get("isLocal");
         String targetFileInfo = this.dateTime + "info";
         String targetFileRoute = this.dateTime + "route";
         File[] fileList = getFilesDir().listFiles();
@@ -205,22 +229,114 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
             if (file.getName().equals(targetFileInfo)){
                 try{
                     BufferedReader br = new BufferedReader(new FileReader(file));
-                    String line;
-                    while((line = br.readLine()) != null){
+                    for(int i = 0; i<4; i++){
+                        System.out.println("read current info file");
+                        String line = br.readLine();
+                        System.out.println(line);
                         String[] splitLine = line.split(":");
-                        if (splitLine[0].contains("Duration")) timeTotal.setText(splitLine[1]);
-                        if (splitLine[0].contains("Distance")) disTotal.setText(splitLine[1]);
-                        if (splitLine[0].contains("Climb")) climbTotal.setText(splitLine[1]);
-                        if (splitLine[0].contains("AVGspd")) avgSpd.setText(splitLine[1]);
+                        String value = splitLine[1];
+                        if (line.contains("Duration")){ this.timeMills = value; }
+                        if (line.contains("Distance")) { this.distance = value; }
+                        if (line.contains("Climb")) { this.climb = value; }
+                        if (line.contains("AVGspd")) { this.avgspd = value; }
                     }
                     br.close();
-                }catch(Exception e){e.printStackTrace();}
+                    this.timeTotal.setText(this.timeMills);
+                    this.disTotal.setText(this.distance);
+                    this.climbTotal.setText(this.climb);
+                    this.avgSpd.setText(this.avgspd);
+                }catch(Exception e){e.printStackTrace();
+                System.out.println("read info file failed");}
             }
             if (file.getName().equals(targetFileRoute)){
                 Log.d(TAG, "Location File Obtained");
                 try {getLatLngFromCSV(file);} catch(Exception e){e.printStackTrace();}
             }
         }
+        if (mAuth.getCurrentUser() != null){ // add the upload button
+            Button tv = new Button(getApplicationContext());
+            tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            tv.setHeight((int) ((int) 65*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f));
+            params.topMargin = (int) ((int) 5*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f);
+            tv.setLayoutParams(params);
+            tv.setTextColor(Color.BLACK);
+            tv.setTextSize(20);
+            tv.setGravity(Gravity.CENTER);
+            tv.setText("Upload Ride");
+            tv.setBackground(getResources().getDrawable(R.drawable.chart_bound1));
+            btns.addView(tv);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (uploadToFirebase()) {
+                        Toast.makeText(ViewRideActivity.this, "Ride Uploaded", Toast.LENGTH_SHORT).show();
+                        File fileInfo = new File(getFilesDir(),dateTime+"info");
+                        boolean infoDeleted = fileInfo.delete();
+                        File fileRoute = new File(getFilesDir(),dateTime+"route");
+                        boolean routeDeleted = fileRoute.delete();
+                        if (infoDeleted && routeDeleted){
+                            ManageRideActivity.thisAct.finish(); // force the manage activity to reload
+                            startActivity(new Intent(ViewRideActivity.this, ManageRideActivity.class));
+                            finish();
+                        }else{
+                            Toast.makeText(ViewRideActivity.this, "Local File Delete Failed!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(ViewRideActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }
+
+    }
+
+    public boolean uploadToFirebase(){
+        AtomicBoolean uploadResult = new AtomicBoolean(true);
+        Map<String, Object> rideInfo = new HashMap<>();
+        rideInfo.put("Duration", this.timeMills);
+        rideInfo.put("Distance", this.distance);
+        rideInfo.put("Climb", this.climb);
+        rideInfo.put("AVGspd", this.avgspd);
+        // store ride basic info into Firebase
+        mStore.collection("Rides-" + mAuth.getCurrentUser().getUid())
+                .document(dateTime).set(rideInfo)
+                .addOnCompleteListener((OnCompleteListener<Void>) (aVoid) -> {
+                    Log.d(TAG, "DocumentSnapshot added");
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error adding document", e);
+                uploadResult.set(false);
+            }
+        });
+        // store ride path file into Firebase
+        try {
+            String filename = mAuth.getCurrentUser().getUid() + "_" + dateTime + ".csv"; // file name
+            File file = new File(this.getBaseContext().getFilesDir(), filename);   // should write to internal storage first
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            if (!routePoints.isEmpty()) {
+                for (LatLng point : routePoints) {
+                    bw.write(point.latitude + "," + point.longitude);
+                    bw.newLine();
+                }
+                bw.close();
+                fw.close();
+                StorageReference ref = straRef.child("UserRideHistory/" + filename);
+                Uri fromFile = Uri.fromFile(file);
+                ref.putFile(fromFile).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(ViewRideActivity.this, "Route Upload FAILED", Toast.LENGTH_SHORT).show();
+                        uploadResult.set(false);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return uploadResult.get();
     }
 
     public void getLatLngFromCSV(File file) throws Exception{

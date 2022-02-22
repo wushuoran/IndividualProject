@@ -1,6 +1,7 @@
 package com.example.matchandride;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +34,7 @@ public class ManageRideActivity extends AppCompatActivity {
     private static final String TAG = "TAG";
     private String curUserId;
     private LinearLayout.MarginLayoutParams params;
-    private ArrayList<Button> rideBtns;
+    private ArrayList<Button> rideBtns,rideBtnsLocal;
     public static Activity thisAct;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class ManageRideActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
         rideBtns = new ArrayList<Button>();
+        rideBtnsLocal = new ArrayList<>();
 
         rideItems = (LinearLayout) findViewById(R.id.sv_items_layout);
         params = (ViewGroup.MarginLayoutParams) rideItems.getLayoutParams();
@@ -56,8 +59,25 @@ public class ManageRideActivity extends AppCompatActivity {
     }
 
     public void getDataLocal(){
+
         File files = getFilesDir();
         File[] fileList = files.listFiles();
+        int localRideCount = 0;
+        for (File file : fileList) if (file.getName().contains("info")) localRideCount++;
+        if (mAuth.getCurrentUser() == null && localRideCount > 0){
+            TextView tv = new TextView(getApplicationContext());
+            tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            tv.setHeight((int) ((int) 105*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f));
+            params.topMargin = (int) ((int) 5*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f);
+            tv.setLayoutParams(params);
+            tv.setTextColor(Color.DKGRAY);
+            tv.setTextSize(15);
+            tv.setGravity(Gravity.CENTER);
+            tv.setText("Below are the rides in local storage" +
+                    "\nThese rides will be lost when using new device" +
+                    "\nWe advise uploading the rides by login");
+            rideItems.addView(tv);
+        }
         for (File file : fileList){
             if (file.getName().contains("info")){
                 String curFile = file.getName();
@@ -71,7 +91,7 @@ public class ManageRideActivity extends AppCompatActivity {
                 rideDate.setGravity(Gravity.CENTER);
                 rideDate.setBackground(getResources().getDrawable(R.drawable.chart_bound1));
                 rideItems.addView(rideDate);
-                rideBtns.add(rideDate); // add to buttons arraylist
+                rideBtnsLocal.add(rideDate); // add to buttons arraylist
             }
             setButtonListeners();
         }
@@ -79,11 +99,42 @@ public class ManageRideActivity extends AppCompatActivity {
 
     public void getDataFirebase(){
 
+        File files = getFilesDir();
+        File[] fileList = files.listFiles();
+        int localRideCount = 0;
+        for (File file : fileList) if (file.getName().contains("info")) localRideCount++;
+        if (localRideCount > 0){
+            System.out.println("Local rides detected.");
+            TextView tv = new TextView(getApplicationContext());
+            tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            tv.setHeight((int) ((int) 105*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f));
+            params.topMargin = (int) ((int) 5*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f);
+            tv.setLayoutParams(params);
+            tv.setTextColor(Color.DKGRAY);
+            tv.setTextSize(15);
+            tv.setGravity(Gravity.CENTER);
+            tv.setText("Below are the ride(s) stored in local storage " +
+                    "\n Upload to cloud in ride details page " +
+                    "\n Uploaded rides can be viewed on any new device " +
+                    "\n Local file will be deleted once uploaded");
+            rideItems.addView(tv);
+            getDataLocal();
+        }
         mStore.collection("Rides-" + curUserId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     System.out.println("Get ride data collection, rides count: " + task.getResult().getDocuments().size());
+                    TextView tv = new TextView(getApplicationContext());
+                    tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+                    tv.setHeight((int) ((int) 45*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f));
+                    params.topMargin = (int) ((int) 5*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f);
+                    tv.setLayoutParams(params);
+                    tv.setTextColor(Color.DKGRAY);
+                    tv.setTextSize(15);
+                    tv.setGravity(Gravity.CENTER);
+                    tv.setText("Below are the uploaded rides");
+                    rideItems.addView(tv);
                     // for each ride, create a button to view details of it
                     for (int i = task.getResult().getDocuments().size(); i > 0; i--) { // reverse order
                         DocumentSnapshot document = task.getResult().getDocuments().get(i-1);
@@ -117,7 +168,20 @@ public class ManageRideActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intent = new Intent(ManageRideActivity.this, ViewRideActivity.class);
                     intent.putExtra("dateTime", btn.getText().toString());
+                    intent.putExtra("isLocal", "cloud");
+                    System.out.println(btn.getText().toString());
+                    startActivity(intent);
+                }
+            });
+        }
 
+        for (Button btn : rideBtnsLocal){
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ManageRideActivity.this, ViewRideActivity.class);
+                    intent.putExtra("dateTime", btn.getText().toString());
+                    intent.putExtra("isLocal", "local");
                     System.out.println(btn.getText().toString());
                     startActivity(intent);
                 }
