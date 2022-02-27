@@ -1,22 +1,31 @@
 package com.example.matchandride;
 
+import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
 import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.matchandride.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     public static boolean loginStatus = false;
     private ActivityMainBinding binding;
@@ -24,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     public static FirebaseFirestore mStore;
     public static FirebaseStorage mStra;
     public static StorageReference straRef;
-
+    public static DatabaseReference mDbLoc;
+    public static boolean onlineSwitchStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mStore = FirebaseFirestore.getInstance();
         mStra = FirebaseStorage.getInstance();
         straRef = mStra.getReference();
+        mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
 
         if (mAuth.getCurrentUser() != null){
             loginStatus = true;
@@ -54,7 +65,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
     }
+/*
+    @Override
+    protected void onStop() {
+        System.out.println("app quits");
+        mDbLoc.child(mAuth.getUid()).removeValue();
+        super.onStop();
+    }
 
-
+ */
 
 }

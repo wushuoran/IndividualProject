@@ -35,7 +35,7 @@ public class RideFragment extends Fragment {
     private RideViewModel rideViewModel;
     private FragmentRideBinding binding;
     private ImageView weeklySum;
-    private Switch onlineSwitch;
+    public static Switch onlineSwitch;
     private Spinner bikeSelector;
     private Button startRide, inviteFri, popRoute, roadCon;
 
@@ -63,6 +63,8 @@ public class RideFragment extends Fragment {
         popRoute = (Button) root.findViewById(R.id.btn_pop_route);
         roadCon = (Button) root.findViewById(R.id.btn_road_con);
 
+        onlineSwitch.setChecked(MainActivity.onlineSwitchStatus);
+
         String[] bikeTyps = new String[]{"Road", "Mountain", "City", "Other"};
         ArrayAdapter<String> aa = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, bikeTyps);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -82,7 +84,12 @@ public class RideFragment extends Fragment {
                     onlineSwitch.setChecked(false);
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 }else {
-
+                    if (!onlineSwitch.isChecked()){
+                        try{MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).removeValue();}catch(Exception e){e.printStackTrace();}
+                        MainActivity.onlineSwitchStatus = false;
+                    }else{
+                        MainActivity.onlineSwitchStatus = true;
+                    }
                 }
             }
         });
@@ -112,4 +119,5 @@ public class RideFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
 }

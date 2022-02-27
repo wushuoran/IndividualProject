@@ -26,6 +26,7 @@ import com.example.matchandride.MainActivity;
 import com.example.matchandride.ManageRideActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentMeBinding;
+import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -141,7 +142,9 @@ public class MeFragment extends Fragment {
                     startActivity(intent);
                 }else{
                     startActivity(new Intent(getActivity(), MainActivity.class));
+                    try{MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).removeValue();}catch(Exception e){e.printStackTrace();}
                     MainActivity.mAuth.signOut();
+                    MainActivity.onlineSwitchStatus = false;
                     Toast.makeText(getActivity(), "Logged Out", Toast.LENGTH_SHORT).show();
 
                 }

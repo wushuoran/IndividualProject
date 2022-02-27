@@ -17,14 +17,24 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -44,6 +54,9 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
     private LatLng lastLat;
     private double totalDistance = 0;
     private long timeStopped;
+    public static FirebaseAuth mAuth;
+    public static DatabaseReference mDbLoc;
+    Marker marker;
 
     /*
     *sprint2 要共享位置
@@ -54,6 +67,9 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_ride);
+
+        mAuth = FirebaseAuth.getInstance();
+        mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
 
         recordMap = (MapView) findViewById(R.id.map_record);
         txtDis = (TextView) findViewById(R.id.txt_distance);
@@ -184,6 +200,18 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                                 .zoom(17)             // Sets the zoom
                                 .build();             // Creates a CameraPosition from the builder
                         gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        if (RideFragment.onlineSwitch.isChecked()){
+                            if (marker != null) marker.remove();
+                            marker = gMap.addMarker(new MarkerOptions().position(currentLat).title("Me").snippet("20kph 5/5")
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_384380_16)));
+                        }else{
+                            if (marker != null) marker.remove();
+                            marker = gMap.addMarker(new MarkerOptions().position(currentLat).title("Me").snippet("20kph 5/5")
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_grey_16)));
+                        }
+                        if (mAuth.getCurrentUser() != null && RideFragment.onlineSwitch.isChecked()){
+                            mDbLoc.child(mAuth.getUid()).setValue(currentLat);
+                        }
                     }
                 }
 
