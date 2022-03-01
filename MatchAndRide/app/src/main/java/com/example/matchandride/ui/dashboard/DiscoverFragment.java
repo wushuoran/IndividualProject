@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.matchandride.AppLifeCycleHandler;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
@@ -130,7 +131,6 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
             this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             this.googleMap.setTrafficEnabled(true);
             this.googleMap.setIndoorEnabled(true);
-            this.googleMap.setMyLocationEnabled(true);
             locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(@NonNull Location location) {
@@ -151,8 +151,9 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                                     .title("Me")
                                     .snippet("20kph 5/5")
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_384380_16)));
-                    if (RideFragment.onlineSwitch.isChecked()){
+                    if (RideFragment.onlineSwitch.isChecked() && !MainActivity.isBackground){
                         MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).setValue(currentLat);
+                        MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).onDisconnect().removeValue();
                         if (!rtDbIsSet) {
                             setNearbyUsers();
                         }
