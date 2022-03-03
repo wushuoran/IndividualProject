@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:text="Set a meet-up location on map:"/>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_meet_up"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="10dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:clickable="true"
+        map:uiCompass="true"
+        map:zOrderOnTop="true"
+        />
+
+    <ScrollView
+        android:id="@+id/sv_inv_list"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:tooltipText="Invited Users"
+        android:layout_marginTop="5dp">
+
+        <LinearLayout
+            android:id="@+id/sv_inv_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="5dp">
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/edit_ride_notes"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="(Optional) Add notes for this ride"/>
+
+    <Button
+        android:id="@+id/btn_send_inv"
+        android:layout_width="310dp"
+        android:layout_height="65dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:text="Send Invitation" />
+
+</LinearLayout>

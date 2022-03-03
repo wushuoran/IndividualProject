@@ -257,28 +257,3 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
 }
-/*
-    public LatLng computeCentroid(List<LatLng> points) {
-        double latitude = 0;
-        double longitude = 0;
-        int n = points.size();
-
-        for (LatLng point : points) {
-            latitude += point.latitude;
-            longitude += point.longitude;
-        }
-
-        return new LatLng(latitude/n, longitude/n);
-    }
-
-
-    public String convertLongToTime(){
-        int hours = (int) (timeMills / 3600000);
-        int minutes = (int) (timeMills - hours * 3600000) / 60000;
-        int seconds = (int) (timeMills- hours * 3600000 - minutes * 60000) / 1000;
-        String timeStr;
-        if (hours == 0) timeStr = minutes + ":" + seconds;
-        else timeStr = hours + ":" + minutes;
-        return timeStr;
-    }
- */

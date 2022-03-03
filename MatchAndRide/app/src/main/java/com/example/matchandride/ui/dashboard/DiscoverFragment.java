@@ -1,9 +1,9 @@
 package com.example.matchandride.ui.dashboard;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -19,15 +19,15 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.matchandride.AppLifeCycleHandler;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
+import com.example.matchandride.SaveRideActivity;
+import com.example.matchandride.SendInvActivity;
 import com.example.matchandride.databinding.FragmentDiscoverBinding;
 import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,14 +41,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.squareup.okhttp.internal.DiskLruCache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +66,7 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
     public static final String TAG = "TAG";
     private HashMap<String, Marker> nearbyUserMap = new HashMap<String, Marker>();
     private boolean rtDbIsSet = false;
+    private ArrayList<String> invitedUsers;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -79,10 +77,10 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
         binding = FragmentDiscoverBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        invitedUsers = new ArrayList<>();
         bikeFilter = (Switch) root.findViewById(R.id.switch_filter);
         nearbyMap = (MapView) root.findViewById(R.id.map_nearby);
-        addList = (Button) root.findViewById(R.id.btn_add_to_list);
-        sendInv = (Button) root.findViewById(R.id.btn_send_inv);
+        sendInv = (Button) root.findViewById(R.id.btn_set_inv);
 
         nearbyMap.onCreate(savedInstanceState);
         nearbyMap.getMapAsync(this);
@@ -93,24 +91,20 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
 
     public void setListeners(){
 
-        addList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (MainActivity.mAuth.getCurrentUser() == null)
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                else {
-
-                }
-            }
-        });
-
         sendInv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (MainActivity.mAuth.getCurrentUser() == null)
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 else {
-
+                    if (invitedUsers.size()>0){
+                        Intent intent = new Intent(getActivity(), SendInvActivity.class);
+                        intent.putExtra("inviteList", invitedUsers);
+                        startActivity(intent);
+                        getActivity().recreate();
+                    }else{
+                        Toast.makeText(getActivity().getApplicationContext(), "No user in Invite List!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -208,7 +202,7 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                             float[] distanceResult = new float[1]; // distance result will stored in this array
                             Location.distanceBetween(currentLat.latitude, currentLat.longitude, userLoc.latitude, userLoc.longitude, distanceResult);
                             // show users within the distance of 10km, and the user is newly found
-                            if (distanceResult[0] <= 10000 && !nearbyUserMap.containsKey(nearUserUid)){
+                            if (distanceResult[0] <= 5000 && !nearbyUserMap.containsKey(nearUserUid)){
                                 System.out.println("User " + sp.getKey() + " is in 10km");
                                 // get current nearby user information
                                 System.out.println("get current nearby user information");
@@ -248,13 +242,13 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                                 });
                             }
                             // an existing user within the range 10km
-                            else if (distanceResult[0] <= 10000 && nearbyUserMap.containsKey(nearUserUid)){
+                            else if (distanceResult[0] <= 5000 && nearbyUserMap.containsKey(nearUserUid)){
                                 System.out.println("Have found this guy, update his location");
                                 Marker userMk = nearbyUserMap.get(nearUserUid);
                                 userMk.setPosition(userLoc);
                             }
                             // an existing user goes out of the range, remove it from map
-                            else if (distanceResult[0] > 10000 && nearbyUserMap.containsKey(nearUserUid)){
+                            else if (distanceResult[0] > 5000 && nearbyUserMap.containsKey(nearUserUid)){
                                 System.out.println("A user travels out of range");
                                 nearbyUserMap.get(nearUserUid).remove();
                                 nearbyUserMap.remove(nearUserUid);
@@ -299,6 +293,38 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
         this.googleMap = googleMap;
         if (MainActivity.mAuth.getCurrentUser() != null) {
             setMap();
+            this.googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    LatLng markerLoc = marker.getPosition();
+                    if (!marker.getTitle().equals("Me") && !markerLoc.equals(currentLat)){
+                        float[] distanceResult = new float[1]; // distance result will stored in this array
+                        Location.distanceBetween(currentLat.latitude, currentLat.longitude, markerLoc.latitude, markerLoc.longitude, distanceResult);
+                        int distanceToMe = (int) (distanceResult[0]/1000);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setMessage("User AVG speed: " + "\nUser Rating: " + "\nApprox. Distance: " + distanceToMe + "km")
+                                .setTitle(marker.getTitle()).setCancelable(true);
+                        builder.setPositiveButton("Add To List", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String userUid = findUidByMarker(marker);
+                                if (userUid != null){
+                                    invitedUsers.add(userUid);
+                                    Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" is added to Invite List"), Toast.LENGTH_SHORT).show();
+                                }
+                                System.out.println(userUid + " is selected");
+                            }
+                        });
+                        builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                                dialog.cancel();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                }
+            });
         }
     }
 
@@ -324,6 +350,14 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
     public void onLowMemory() {
         super.onLowMemory();
         nearbyMap.onLowMemory();
+    }
+
+    public String findUidByMarker (Marker marker){
+        String targetUid = null;
+        for (String uid : this.nearbyUserMap.keySet())
+            if (this.nearbyUserMap.get(uid).equals(marker))
+                targetUid = uid;
+        return targetUid;
     }
 
 }

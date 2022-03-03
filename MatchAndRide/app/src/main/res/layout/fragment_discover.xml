@@ -48,7 +48,7 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/map_nearby"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="400dp"
         android:layout_marginTop="10dp"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:clickable="true"
@@ -56,33 +56,14 @@
         map:zOrderOnTop="true"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/btn_add_to_list"
-            android:layout_width="170dp"
-            android:layout_height="65dp"
-            android:textAllCaps="false"
-            android:textSize="15sp"
-            android:text="Add to \n Invite List"/>
-
-        <Button
-            android:id="@+id/btn_send_inv"
-            android:layout_width="170dp"
-            android:layout_height="65dp"
-            android:layout_marginLeft="20dp"
-            android:textAllCaps="false"
-            android:layout_gravity="center"
-            android:textSize="15sp"
-            android:text="Send \n Invitation" />
-
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_set_inv"
+        android:layout_width="310dp"
+        android:layout_height="65dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:text="Setup Invitation" />
 
 
 
