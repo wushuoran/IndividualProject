@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="15dp"
-    android:paddingRight="15dp">
+    android:paddingRight="15dp"
+    android:keepScreenOn="true">
 
     <TextView
         android:layout_width="match_parent"
@@ -25,7 +26,7 @@
         android:textSize="17sp"
         android:textColor="@color/common_google_signin_btn_text_light"
         android:textAllCaps="false"
-        android:text="Invitation(s) have been sent to selected users. \nPlease allow 1 minute for them to accept.\nPlease do not quit app.\nIf timeout, invitation will be treated as refused.\n\nJoined user(s) will be shown below"/>
+        android:text="Invitation(s) have been sent to selected users. \nPlease allow 2 minute for them to accept.\nPlease do not quit app.\nIf timeout, invitation will be treated as refused.\n\nJoined user(s) will be shown below"/>
 
     <ScrollView
         android:id="@+id/sv_users_list"

@@ -115,6 +115,11 @@
             android:theme="@style/Theme.MyApplicationNoBar">
         </activity>
 
+        <activity
+            android:name="com.example.matchandride.RecordRideInvActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
     </application>
 
 </manifest>

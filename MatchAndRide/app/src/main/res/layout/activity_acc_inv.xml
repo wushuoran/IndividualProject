@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="15dp"
-    android:paddingRight="15dp">
+    android:paddingRight="15dp"
+    android:keepScreenOn="true">
 
     <TextView
         android:layout_width="match_parent"
@@ -80,8 +81,9 @@
 
         <Button
             android:id="@+id/btn_refuse_inv"
-            android:layout_width="170dp"
+            android:layout_width="150dp"
             android:layout_height="65dp"
+            android:layout_marginRight="5dp"
             android:textAllCaps="false"
             android:layout_gravity="center"
             android:textSize="25sp"
@@ -89,8 +91,9 @@
 
         <Button
             android:id="@+id/btn_accept_inv"
-            android:layout_width="170dp"
+            android:layout_width="150dp"
             android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
             android:textAllCaps="false"
             android:layout_gravity="center"
             android:textSize="25sp"

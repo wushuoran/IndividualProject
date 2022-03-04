@@ -1,6 +1,7 @@
 package com.example.matchandride;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -69,13 +70,18 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
     public static final String TAG = "TAG";
     private HashMap<String, Marker> nearbyUserMap = new HashMap<String, Marker>();
     private HashMap<String,TextView> invitedUserTV = new HashMap<>();
+    public static ArrayList<String> lostUsers;
+    public static Activity actRef;
 
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_inv);
 
+        actRef = this;
+
         invUids = new ArrayList<>();
+        lostUsers = new ArrayList<>();
         getInvData();
 
         mAuth = FirebaseAuth.getInstance();
@@ -320,6 +326,7 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
                     nearbyUserMap.get(offlineuser).remove();
                     nearbyUserMap.remove(offlineuser);
                     Toast.makeText(getApplicationContext(), "One user is offline", Toast.LENGTH_SHORT).show();
+                    lostUsers.add(offlineuser);
                     // if user travels out of range, delete the user from invite list
                     try{
                         invUids.remove(offlineuser);

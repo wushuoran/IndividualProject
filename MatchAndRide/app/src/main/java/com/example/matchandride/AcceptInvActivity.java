@@ -2,6 +2,7 @@ package com.example.matchandride;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -61,10 +62,11 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
         mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
         mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
 
-
         getInvInfo();
         childname = mAuth.getCurrentUser().getUid() + ":" + senderUid;
         invChildname = senderUid + ":" + mAuth.getCurrentUser().getUid();
+
+        MyCountDown timer = new MyCountDown(61000, 1000); //11s for testing
 
         rideInfo = (TextView) findViewById(R.id.tv_inv_inviter_info);
         setRideInfo();
@@ -76,6 +78,8 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
             public void onClick(View view) {
                 mDbAcc.child(childname).setValue(false);
                 mDbInv.child(invChildname).removeValue();
+                timer.operationMade = true;
+                startActivity(new Intent(AcceptInvActivity.this, MainActivity.class));
                 finish();
             }
         });
@@ -85,6 +89,9 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
             public void onClick(View view) {
                 mDbAcc.child(childname).setValue(true);
                 mDbInv.child(invChildname).removeValue();
+                timer.operationMade = true;
+                Intent intent = new Intent(AcceptInvActivity.this, RecordRideInvActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -93,7 +100,7 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
         meetMap.onCreate(savedInstanceState);
         meetMap.getMapAsync(this);
 
-        new MyCountDown(61000, 1000); //11s for testing
+
 
     }
 
@@ -196,6 +203,7 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
     private class MyCountDown extends CountDownTimer {
 
         int secs;
+        boolean operationMade = false;
 
         public MyCountDown(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -205,9 +213,11 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
         @Override
         public void onFinish() {
             secs = 10;
-            mDbAcc.child(childname).setValue(false);
-            mDbInv.child(invChildname).removeValue();
-            AcceptInvActivity.this.finish();
+            if (!operationMade){
+                mDbAcc.child(childname).setValue(false);
+                mDbInv.child(invChildname).removeValue();
+                AcceptInvActivity.this.finish();
+            }
         }
 
         @Override

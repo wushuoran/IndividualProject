@@ -368,7 +368,7 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
     }
 
     public void listenToInv() {
-        if (RideFragment.onlineSwitch.isChecked()) {
+        if (MainActivity.onlineSwitchStatus) {
             invEvnLis = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -383,13 +383,16 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                             String[] splitMsg = invMsg.split(",");
                             LatLng meetPlace = new LatLng(Double.valueOf(splitMsg[0]), Double.valueOf(splitMsg[1]));
                             int estParti = Integer.valueOf(splitMsg[2]);
-                            Intent intent = new Intent(getContext(), AcceptInvActivity.class);
-                            intent.putExtra("meetPlace", meetPlace);
-                            intent.putExtra("senderUid", invSender);
-                            intent.putExtra("estParti", estParti);
-                            if (splitMsg.length == 4)intent.putExtra("addNotes", splitMsg[3]);
-                            MainActivity.mDbInv.removeEventListener(invEvnLis);
-                            startActivity(intent);
+                            try{
+                                Toast.makeText(getActivity(), "One Invitation Received !\nview details in Discover page.", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(getContext(), AcceptInvActivity.class);
+                                intent.putExtra("meetPlace", meetPlace);
+                                intent.putExtra("senderUid", invSender);
+                                intent.putExtra("estParti", estParti);
+                                if (splitMsg.length == 4)intent.putExtra("addNotes", splitMsg[3]);
+                                MainActivity.mDbInv.removeEventListener(invEvnLis);
+                                startActivity(intent);
+                            }catch(Exception e){e.printStackTrace();}
                             break;
                         }
                     }
