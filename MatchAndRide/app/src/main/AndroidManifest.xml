@@ -105,6 +105,16 @@
             android:theme="@style/Theme.MyApplicationNoBar">
         </activity>
 
+        <activity
+            android:name="com.example.matchandride.WaitAccActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
+        <activity
+            android:name="com.example.matchandride.AcceptInvActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
     </application>
 
 </manifest>

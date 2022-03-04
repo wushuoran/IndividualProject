@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:text="Waiting for Users to Join..."/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@color/common_google_signin_btn_text_light"
+        android:textAllCaps="false"
+        android:text="Invitation(s) have been sent to selected users. \nPlease allow 1 minute for them to accept.\nPlease do not quit app.\nIf timeout, invitation will be treated as refused.\n\nJoined user(s) will be shown below"/>
+
+    <ScrollView
+        android:id="@+id/sv_users_list"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:tooltipText="Invited Users"
+        android:layout_marginTop="5dp">
+
+        <LinearLayout
+            android:id="@+id/sv_users_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="5dp">
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <Button
+        android:id="@+id/btn_start_ride_inv"
+        android:layout_width="310dp"
+        android:layout_height="65dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:text="Start!" />
+
+</LinearLayout>

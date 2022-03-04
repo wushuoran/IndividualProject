@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.matchandride.AcceptInvActivity;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
@@ -67,6 +68,7 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
     private HashMap<String, Marker> nearbyUserMap = new HashMap<String, Marker>();
     private boolean rtDbIsSet = false;
     private ArrayList<String> invitedUsers;
+    private ValueEventListener invEvnLis;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -84,6 +86,9 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
 
         nearbyMap.onCreate(savedInstanceState);
         nearbyMap.getMapAsync(this);
+
+        listenToInv();
+
         setListeners();
 
         return root;
@@ -145,7 +150,7 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                                     .title("Me")
                                     .snippet("20kph 5/5")
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_384380_16)));
-                    if (RideFragment.onlineSwitch.isChecked() && !MainActivity.isBackground){
+                    if (MainActivity.onlineSwitchStatus && !MainActivity.isBackground){
                         MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).setValue(currentLat);
                         MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).onDisconnect().removeValue();
                         if (!rtDbIsSet) {
@@ -307,9 +312,11 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                         builder.setPositiveButton("Add To List", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String userUid = findUidByMarker(marker);
-                                if (userUid != null){
+                                if (userUid != null && !invitedUsers.contains(userUid)){
                                     invitedUsers.add(userUid);
                                     Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" is added to Invite List"), Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" already in Invite List!!!"), Toast.LENGTH_SHORT).show();
                                 }
                                 System.out.println(userUid + " is selected");
                             }
@@ -358,6 +365,44 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
             if (this.nearbyUserMap.get(uid).equals(marker))
                 targetUid = uid;
         return targetUid;
+    }
+
+    public void listenToInv() {
+        if (RideFragment.onlineSwitch.isChecked()) {
+            invEvnLis = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot sp : snapshot.getChildren()) {
+                        String childname = sp.getKey();
+                        String[] splitChild = childname.split(":");
+                        String invSender = splitChild[0];
+                        String invReci = splitChild[1];
+                        if (invReci.equals(MainActivity.mAuth.getCurrentUser().getUid())) {
+                            System.out.println("Invitation Detected!");
+                            String invMsg = sp.getValue().toString();
+                            String[] splitMsg = invMsg.split(",");
+                            LatLng meetPlace = new LatLng(Double.valueOf(splitMsg[0]), Double.valueOf(splitMsg[1]));
+                            int estParti = Integer.valueOf(splitMsg[2]);
+                            Intent intent = new Intent(getContext(), AcceptInvActivity.class);
+                            intent.putExtra("meetPlace", meetPlace);
+                            intent.putExtra("senderUid", invSender);
+                            intent.putExtra("estParti", estParti);
+                            if (splitMsg.length == 4)intent.putExtra("addNotes", splitMsg[3]);
+                            MainActivity.mDbInv.removeEventListener(invEvnLis);
+                            startActivity(intent);
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            MainActivity.mDbInv.addValueEventListener(invEvnLis);
+            System.out.println("Accept RTDB Listener Set");
+        }
     }
 
 }

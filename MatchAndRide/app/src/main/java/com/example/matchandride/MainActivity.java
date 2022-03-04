@@ -7,11 +7,13 @@ import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -27,8 +29,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.matchandride.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -44,8 +49,12 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
     public static FirebaseStorage mStra;
     public static StorageReference straRef;
     public static DatabaseReference mDbLoc;
+    public static DatabaseReference mDbInv;
+    public static DatabaseReference mDbAcc;
     public static boolean onlineSwitchStatus;
     public static boolean isBackground;
+    private ValueEventListener invEvnLis;
+    public static boolean isInvited;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
         mStra = FirebaseStorage.getInstance();
         straRef = mStra.getReference();
         mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
+        mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
+        mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
 
         if (mAuth.getCurrentUser() != null){
             loginStatus = true;
@@ -126,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
     public void onActivityDestroyed(@NonNull Activity activity) {
 
     }
+
+
+
 
 /*
     @Override
