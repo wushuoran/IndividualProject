@@ -19,16 +19,6 @@
         android:text="NEW INVITATION"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textColor="@color/common_google_signin_btn_text_light"
-        android:textAllCaps="false"
-        android:text="Will automatically refuse after 1 min"/>
-
-    <TextView
         android:id="@+id/tv_inv_inviter_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +48,7 @@
         android:textSize="18sp"
         android:textColor="@color/common_google_signin_btn_text_light"
         android:textAllCaps="false"
-        android:text="Meet-up place are shown below\nClick marker to view distance"/>
+        android:text="Please check meet-up place carefully\nMake sure the place is safe and reachable\nIf not, please refuse (auto refuse after 1 min)"/>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map_meet_up_reci"

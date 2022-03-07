@@ -1,19 +1,28 @@
 package com.example.matchandride;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -30,11 +39,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -56,12 +65,17 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
     private long timeStopped;
     public static FirebaseAuth mAuth;
     public static DatabaseReference mDbLoc;
-    Marker marker;
+    private Marker marker;
+    private ValueEventListener invEvnLis;
+    public static ValueEventListener pubLis;
+    public static DatabaseReference mDbInv;
+    public double curSpeed;
+    public boolean isPaused = false;
+    private Vibrator vib;
+    private boolean isOnline;
+    public static Activity rrAct;
 
-    /*
-    *sprint2 要共享位置
-    * */
-
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -70,13 +84,20 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
 
         mAuth = FirebaseAuth.getInstance();
         mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
+        mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
+
+        rrAct = this;
+
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        Bundle extras = this.getIntent().getExtras();
+        isOnline = (boolean) extras.get("isOnline");
 
         recordMap = (MapView) findViewById(R.id.map_record);
         txtDis = (TextView) findViewById(R.id.txt_distance);
         txtCurSpd = (TextView) findViewById(R.id.txt_cur_spd);
         txtAvgSpd = (TextView) findViewById(R.id.txt_avg_spd);
         txtClimb = (TextView) findViewById(R.id.txt_climb);
-        txtAvgSpd = (TextView) findViewById(R.id.txt_avg_spd);
         pauseRes = (Button) findViewById(R.id.btn_pau_con);
         endRide = (Button) findViewById(R.id.btn_end_ride);
         chrTimer = (Chronometer) findViewById(R.id.chr_time);
@@ -86,6 +107,8 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
 
         routePoints = new ArrayList<LatLng>();
         txtClimb.setText("0");
+
+        listenToInv();
 
         setLocationListeners();
 
@@ -157,6 +180,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                     // get the speed
                     if (location.hasSpeed()){
                         txtCurSpd.setText(String.format("%.2f", (location.getSpeed())*3.6));
+                        curSpeed = (location.getSpeed())*3.6;
                     }
                     if (location != null){
                         System.out.println(latitude + " " + longitude);
@@ -200,7 +224,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                                 .zoom(17)             // Sets the zoom
                                 .build();             // Creates a CameraPosition from the builder
                         gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        if (RideFragment.onlineSwitch.isChecked()){
+                        if (isOnline){
                             if (marker != null) marker.remove();
                             marker = gMap.addMarker(new MarkerOptions().position(currentLat).title("Me").snippet("20kph 5/5")
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_384380_16)));
@@ -209,7 +233,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                             marker = gMap.addMarker(new MarkerOptions().position(currentLat).title("Me").snippet("20kph 5/5")
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_grey_16)));
                         }
-                        if (mAuth.getCurrentUser() != null && RideFragment.onlineSwitch.isChecked()){
+                        if (mAuth.getCurrentUser() != null && isOnline){
                             mDbLoc.child(mAuth.getUid()).setValue(currentLat);
                         }
                     }
@@ -252,8 +276,10 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
         gMap = googleMap;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
+        isPaused = false;
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 200, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 200, 0, locationListener);
         chrTimer.setBase(SystemClock.elapsedRealtime() + timeStopped);
@@ -262,8 +288,10 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
         super.onResume();
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onPause() {
+        isPaused = true;
         locationManager.removeUpdates(locationListener);
         lastAltitude = -10000; // do not calculate the altitude rised during pause period
         lastLat = null;        // do not calculate the distance travelled during pause period
@@ -285,10 +313,102 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
         recordMap.onLowMemory();
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onStop() {
         locationManager.removeUpdates(locationListener);
         super.onStop();
     }
+
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
+    public void listenToInv() {
+        if (MainActivity.onlineSwitchStatus && !(invEvnLis != null)) {
+            invEvnLis = new ValueEventListener() {
+                @SuppressLint("MissingPermission")
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot sp : snapshot.getChildren()) {
+                        String childname = sp.getKey();
+                        String[] splitChild = childname.split(":");
+                        String invSender = splitChild[0];
+                        String invReci = splitChild[1];
+                        if (invReci.equals(mAuth.getCurrentUser().getUid())) {
+                            System.out.println("Invitation Detected!");
+                            String invMsg = sp.getValue().toString();
+                            String[] splitMsg = invMsg.split(",");
+                            LatLng meetPlace = new LatLng(Double.valueOf(splitMsg[0]), Double.valueOf(splitMsg[1]));
+                            int estParti = Integer.valueOf(splitMsg[2]);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(RecordRideActivity.this);
+                            builder.setMessage("Find a safe place to STOP and view the invitation." +
+                                    "\nOnce accepted, current ride will save automatically")
+                                    .setTitle("New invitation received").setCancelable(true);
+                            builder.setPositiveButton("View Invitation", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                            builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                    dialog.cancel();
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                            // Vibrate for 500 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                vib.vibrate(VibrationEffect.createOneShot(20000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                vib.vibrate(20000);
+                            }
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (curSpeed>5 && !isPaused){
+                                        Toast.makeText(RecordRideActivity.this, "Please STOP", Toast.LENGTH_LONG).show();
+                                    }
+                                    if (curSpeed<=5 || isPaused){ // if user stops or ride is paused, let user view the invitation
+                                        try {
+                                            Intent intent = new Intent(RecordRideActivity.this, AcceptInvActivity.class);
+                                            intent.putExtra("meetPlace", meetPlace);
+                                            intent.putExtra("senderUid", invSender);
+                                            intent.putExtra("estParti", estParti);
+                                            intent.putExtra("curAct", "record");
+                                            if (splitMsg.length == 4) intent.putExtra("addNotes", splitMsg[3]);
+                                            intent.putExtra("timeTotal", chrTimer.getText().toString());
+                                            intent.putExtra("disTotal", txtDis.getText().toString());
+                                            intent.putExtra("climbTotal", txtClimb.getText().toString());
+                                            intent.putExtra("avgSpd", txtAvgSpd.getText().toString());
+                                            intent.putParcelableArrayListExtra("routePoints", routePoints);
+                                            vib.cancel();
+                                            startActivity(intent);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        dialog.dismiss();
+                                    }
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            pubLis = invEvnLis;
+            mDbInv.addValueEventListener(invEvnLis);
+            System.out.println("Accept RTDB Listener Set");
+        }
+
+    }
+
 
 }

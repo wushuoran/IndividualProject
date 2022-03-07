@@ -66,6 +66,8 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
     public static DatabaseReference mDbLoc;
     public static DatabaseReference mDbInv;
     public static DatabaseReference mDbAcc;
+    public static DatabaseReference mDbGrp;
+    public static DatabaseReference mDbInvited;
     private LatLng meetUpLoc;
     public static final String TAG = "TAG";
     private HashMap<String, Marker> nearbyUserMap = new HashMap<String, Marker>();
@@ -91,6 +93,8 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
         mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
         mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
         mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
+        mDbGrp = FirebaseDatabase.getInstance().getReference("rt-groups");
+        mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
 
         meetMap = (MapView) findViewById(R.id.map_meet_up);
         invitedUsers = (LinearLayout) findViewById(R.id.sv_inv_list_layout);
@@ -325,7 +329,6 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
                 for (String offlineuser : offLineUser) {
                     nearbyUserMap.get(offlineuser).remove();
                     nearbyUserMap.remove(offlineuser);
-                    Toast.makeText(getApplicationContext(), "One user is offline", Toast.LENGTH_SHORT).show();
                     lostUsers.add(offlineuser);
                     // if user travels out of range, delete the user from invite list
                     try{

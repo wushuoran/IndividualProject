@@ -42,6 +42,7 @@ public class WaitAccActivity extends AppCompatActivity {
     private HashMap<String, TextView> userTV;
     private ArrayList<String> dontWait;
     private MyCountDown timer;
+    private ArrayList<String> completeInvUid; // used for clearing data in server
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -52,6 +53,7 @@ public class WaitAccActivity extends AppCompatActivity {
         acceptedUser = new ArrayList<>();
         refusedUser = new ArrayList<>();
         dontWait = new ArrayList<>();
+        completeInvUid = new ArrayList<>();
         userTV = new HashMap<>();
         getInvData();
         userResponseAmt = invUids.size();
@@ -134,15 +136,23 @@ public class WaitAccActivity extends AppCompatActivity {
     public void isTimeToStart(){
         if (userResponseAmt == 0){                                              // all invited users have sent response
             SendInvActivity.mDbAcc.removeEventListener(this.accValEvnLis);      // remove value change listener on rt-acc
+            String currentUserId = SendInvActivity.mAuth.getCurrentUser().getUid();
+            String groupMembers = currentUserId;
             for (String id: invUids){                                           // remove invitation response on rt-acc
                 String childToRemove = id + ":" + SendInvActivity.mAuth.getCurrentUser().getUid();
                 SendInvActivity.mDbAcc.child(childToRemove).removeValue();
+                SendInvActivity.mDbInvited.child(id).setValue(true);
+                groupMembers = groupMembers + "," + id;
             }
+            SendInvActivity.mDbGrp.child(currentUserId).setValue(groupMembers);
+            SendInvActivity.mDbInvited.child(currentUserId).setValue(true);
             startRiding.setEnabled(true);
             startRiding.setText("Start!");
             timer.allHaveResult = true;
             //........record riding
             Intent intent = new Intent(WaitAccActivity.this, RecordRideInvActivity.class);
+            intent.putExtra("sender", currentUserId);
+            intent.putExtra("organizer", true);
             startActivity(intent);
             SendInvActivity.actRef.finish();
             this.finish();
@@ -197,10 +207,16 @@ public class WaitAccActivity extends AppCompatActivity {
     }
 
     public void invitationFailed(){
-        try{
-            SendInvActivity.mDbAcc.removeValue();
-            SendInvActivity.mDbInv.removeValue();
-        }catch(Exception e){e.printStackTrace();}
+        for (String uid : completeInvUid){
+            String expInvName = SendInvActivity.mAuth.getCurrentUser().getUid() + ":" + uid;
+            String expAccName = uid + ":" + SendInvActivity.mAuth.getCurrentUser().getUid();
+            System.out.println("inv to delete: " + expInvName);
+            System.out.println("acc to delete: " + expAccName);
+            try{
+                SendInvActivity.mDbAcc.child(expAccName).removeValue();
+                SendInvActivity.mDbInv.child(expInvName).removeValue();
+            }catch(Exception e){e.printStackTrace();}
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(WaitAccActivity.this);
         builder.setMessage("Click OK to go back.")
                 .setTitle("Invitation Failed").setCancelable(true);
@@ -224,6 +240,7 @@ public class WaitAccActivity extends AppCompatActivity {
     private void getInvData(){
         Bundle extras = this.getIntent().getExtras();
         this.invUids = (ArrayList<String>) extras.get("invUids");
+        this.completeInvUid = (ArrayList<String>) extras.get("invUids");
     }
 
     private class MyCountDown extends CountDownTimer {

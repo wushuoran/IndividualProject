@@ -10,8 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -51,10 +54,12 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
     public static DatabaseReference mDbLoc;
     public static DatabaseReference mDbInv;
     public static DatabaseReference mDbAcc;
+    public static DatabaseReference mDbInvited;
     public static boolean onlineSwitchStatus;
     public static boolean isBackground;
     private ValueEventListener invEvnLis;
     public static boolean isInvited;
+    public static boolean goToOtherAct = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
         super.onCreate(savedInstanceState);
         registerComponentCallbacks(this);
         getApplication().registerActivityLifecycleCallbacks(this);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
@@ -71,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
         mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
         mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
         mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
+        mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
 
         if (mAuth.getCurrentUser() != null){
             loginStatus = true;
@@ -138,7 +145,54 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
 
     }
 
+    public void listenToInv() {
+        if (MainActivity.onlineSwitchStatus && !goToOtherAct && !(invEvnLis!=null)) {
+            invEvnLis = new ValueEventListener() {
+                @SuppressLint("MissingPermission")
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot sp : snapshot.getChildren()) {
+                        String childname = sp.getKey();
+                        String[] splitChild = childname.split(":");
+                        String invSender = splitChild[0];
+                        String invReci = splitChild[1];
+                        if (invReci.equals(MainActivity.mAuth.getCurrentUser().getUid())) {
+                            System.out.println("Invitation Detected!");
 
+                            String invMsg = sp.getValue().toString();
+                            String[] splitMsg = invMsg.split(",");
+                            LatLng meetPlace = new LatLng(Double.valueOf(splitMsg[0]), Double.valueOf(splitMsg[1]));
+                            int estParti = Integer.valueOf(splitMsg[2]);
+                            try{
+                                //Toast.makeText(MainActivity.this, "One Invitation Received !\nview details in Discover page.", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(MainActivity.this, AcceptInvActivity.class);
+                                intent.putExtra("meetPlace", meetPlace);
+                                intent.putExtra("senderUid", invSender);
+                                intent.putExtra("estParti", estParti);
+                                intent.putExtra("curAct", "main");
+                                if (splitMsg.length == 4)intent.putExtra("addNotes", splitMsg[3]);
+                                MainActivity.mDbInv.removeEventListener(invEvnLis);
+                                startActivity(intent);
+                            }catch(Exception e){e.printStackTrace();}
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            MainActivity.mDbInv.addValueEventListener(invEvnLis);
+            System.out.println("Accept RTDB Listener Set");
+        }
+    }
+
+    public void removeInvListener(){
+        try{mDbInv.removeEventListener(invEvnLis);
+        }catch(Exception e){e.printStackTrace();}
+    }
 
 
 /*

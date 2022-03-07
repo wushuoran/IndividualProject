@@ -95,6 +95,7 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
                 saveRide();
+                MainActivity.goToOtherAct = false;
                 startActivity(new Intent(SaveRideActivity.this, MainActivity.class));
                 finish();
             }
@@ -108,6 +109,7 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                         .setTitle("Confirm").setCancelable(true);
                 builder.setPositiveButton("Discard", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        MainActivity.goToOtherAct = false;
                         startActivity(new Intent(SaveRideActivity.this, MainActivity.class));
                         finish();
                     }

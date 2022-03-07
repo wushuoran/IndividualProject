@@ -70,6 +70,8 @@ public class RideFragment extends Fragment {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bikeSelector.setAdapter(aa);
 
+        ((MainActivity)getActivity()).listenToInv();
+
         setListeners();
 
         return root;
@@ -97,7 +99,15 @@ public class RideFragment extends Fragment {
         startRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), RecordRideActivity.class));
+                // once start riding, tell MainActivity, PLEASE DO NOT SET LISTENER!!!!
+                // but need to modify this boolean back if ride finished
+                MainActivity.goToOtherAct = true;
+                // once started riding, stop receiving invitation (from MainActivity)
+                // set a different listener in recording page
+                ((MainActivity)getActivity()).removeInvListener();
+                Intent intent = new Intent(getActivity(), RecordRideActivity.class);
+                intent.putExtra("isOnline", onlineSwitch.isChecked());
+                startActivity(intent);
             }
         });
 

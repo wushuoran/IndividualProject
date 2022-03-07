@@ -81,6 +81,8 @@ public class MeFragment extends Fragment {
         }
         setListeners();
 
+        ((MainActivity)getActivity()).listenToInv();
+
         return root;
 
     }

@@ -1,16 +1,23 @@
 package com.example.matchandride;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,20 +30,34 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private TextView rideInfo, addInfo;
-    private Button refuseBtn, acceptBtn;
+    public static Button acceptBtn;
+    public static Button refuseBtn;
     private MapView meetMap;
     private String senderUid, addNote, childname, invChildname;
     private int estParti;
@@ -49,7 +70,14 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
     public static DatabaseReference mDbLoc;
     public static DatabaseReference mDbInv;
     public static DatabaseReference mDbAcc;
+    public static DatabaseReference mDbGrp;
+    private String lastAct;
+    private Vibrator vib;
+    private Bundle extras;
+    private String timeMills, distance, climb, avgspd;
+    private ArrayList<LatLng> routePoints;
 
+    @SuppressLint("MissingPermission")
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -61,10 +89,24 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
         mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
         mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
         mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
+        mDbGrp = FirebaseDatabase.getInstance().getReference("rt-groups");
+
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         getInvInfo();
         childname = mAuth.getCurrentUser().getUid() + ":" + senderUid;
         invChildname = senderUid + ":" + mAuth.getCurrentUser().getUid();
+
+        if (lastAct.equals("main")){
+            // Vibrate for 500 milliseconds
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vib.vibrate(VibrationEffect.createOneShot(20000, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                //deprecated in API 26
+                vib.vibrate(20000);
+            }
+        }
+
 
         MyCountDown timer = new MyCountDown(61000, 1000); //11s for testing
 
@@ -74,23 +116,34 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
         try{addInfo.setText(addNote);}catch(NullPointerException e){e.printStackTrace();}
         refuseBtn = (Button) findViewById(R.id.btn_refuse_inv);
         refuseBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
             @Override
             public void onClick(View view) {
                 mDbAcc.child(childname).setValue(false);
                 mDbInv.child(invChildname).removeValue();
                 timer.operationMade = true;
-                startActivity(new Intent(AcceptInvActivity.this, MainActivity.class));
+                vib.cancel();
                 finish();
             }
         });
         acceptBtn = (Button) findViewById(R.id.btn_accept_inv);
         acceptBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
             @Override
             public void onClick(View view) {
                 mDbAcc.child(childname).setValue(true);
                 mDbInv.child(invChildname).removeValue();
                 timer.operationMade = true;
+                vib.cancel();
+                if(lastAct.equals("record")){
+                    MainActivity.goToOtherAct = false;
+                    RecordRideActivity.mDbInv.removeEventListener(RecordRideActivity.pubLis);
+                    System.out.println("listener in recording activity removed!");
+                    saveRide();
+                }
                 Intent intent = new Intent(AcceptInvActivity.this, RecordRideInvActivity.class);
+                intent.putExtra("sender", senderUid);
+                intent.putExtra("organizer",false);
                 startActivity(intent);
                 finish();
             }
@@ -99,8 +152,6 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
 
         meetMap.onCreate(savedInstanceState);
         meetMap.getMapAsync(this);
-
-
 
     }
 
@@ -184,10 +235,11 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     public void getInvInfo(){
-        Bundle extras = this.getIntent().getExtras();
+        extras = this.getIntent().getExtras();
         this.senderUid = (String) extras.get("senderUid");
         this.meetPlace = (LatLng) extras.get("meetPlace");
         this.estParti = (int) extras.get("estParti");
+        this.lastAct = (String) extras.get("curAct");
         try{
             this.addNote = (String) extras.get("addNotes");
         }catch(Exception e){e.printStackTrace();}
@@ -199,6 +251,61 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
         return;
     }
 
+    public void saveRide(){
+        this.timeMills = (String) extras.get("timeTotal");
+        this.distance = (String) extras.get("disTotal");
+        this.climb = (String) extras.get("climbTotal");
+        this.avgspd = (String) extras.get("avgSpd");
+        this.routePoints = this.getIntent().getParcelableArrayListExtra("routePoints");
+
+        SimpleDateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        Date date1 = new Date();
+        String dateTime = formatter1.format(date1);
+        SimpleDateFormat formatter2 = new SimpleDateFormat("dd-MM-yyyy");
+        Date date2 = new Date();
+        String date = formatter2.format(date2);
+        Map<String, Object> rideInfo = new HashMap<>();
+        rideInfo.put("Duration", timeMills);
+        rideInfo.put("Distance", distance);
+        rideInfo.put("Climb", climb);
+        rideInfo.put("AVGspd", avgspd);
+
+        mStore.collection("Rides-" + mAuth.getCurrentUser().getUid())
+                .document(dateTime).set(rideInfo)
+                .addOnCompleteListener((OnCompleteListener<Void>) (aVoid) -> {
+                    Log.d(TAG, "DocumentSnapshot added");
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error adding document", e);
+            }
+        });
+        // store ride path file into Firebase
+        try{
+            String filename = mAuth.getCurrentUser().getUid()+"_"+dateTime+".csv"; // file name
+            File file = new File(this.getBaseContext().getFilesDir(), filename);   // should write to internal storage first
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            if (!routePoints.isEmpty()){
+                for (LatLng point : routePoints){
+                    bw.write(point.latitude + "," + point.longitude);
+                    bw.newLine();
+                }
+                bw.close();
+                fw.close();
+                StorageReference ref = straRef.child("UserRideHistory/" + filename);
+                Uri fromFile = Uri.fromFile(file);
+                ref.putFile(fromFile).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(AcceptInvActivity.this, "Route Upload FAILED", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }catch (Exception e){e.printStackTrace();}
+        Toast.makeText(AcceptInvActivity.this, "Ride Uploaded", Toast.LENGTH_SHORT).show();
+
+    }
 
     private class MyCountDown extends CountDownTimer {
 
