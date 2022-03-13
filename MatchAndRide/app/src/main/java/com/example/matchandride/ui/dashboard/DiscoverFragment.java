@@ -221,25 +221,22 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                                     System.out.println("get current nearby user information");
                                     DocumentReference dRef = MainActivity.mStore.collection("UserNames").document(nearUserUid);
                                     final String[] nearUserInfo = new String[1];
-                                    ArrayList<String> testarr = new ArrayList<>();
                                     dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                             if (task.isSuccessful()) {
                                                 DocumentSnapshot document = task.getResult();
                                                 if (document.exists()) {
-                                                    nearUserInfo[0] = document.getString("Username");
                                                     System.out.println(nearUserInfo[0]);
-                                                    /* GET&SET MORE INFO HERE, AVG SPEED, RATING, .... */
-                                                    testarr.add(nearUserInfo[0]);
-
                                                     if (nearbyUserMap.containsKey(nearUserUid))
                                                         nearbyUserMap.get(nearUserUid).setPosition(userLoc);
                                                     else{
+                                                        String snippet = document.get("AVGspd").toString() + "kph, "
+                                                                        + document.get("Rating") + "/5";
                                                         Marker userMk = googleMap.addMarker(new MarkerOptions()
                                                                 .position(userLoc)
-                                                                .title(nearUserInfo[0])
-                                                                .snippet("20kph, 5/5")
+                                                                .title(document.getString("Username"))
+                                                                .snippet(snippet)
                                                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_red_16)));
                                                         nearbyUserMap.put(nearUserUid, userMk);
                                                     }

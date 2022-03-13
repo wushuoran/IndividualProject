@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.matchandride.objects.RideObject;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -25,8 +26,12 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -148,6 +153,7 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
         rideInfo.put("Distance", distance);
         rideInfo.put("Climb", climb);
         rideInfo.put("AVGspd", avgspd);
+        rideInfo.put("Timestamp", new Timestamp(0,0).now());
         if (mAuth.getCurrentUser() != null){ // user has logged in, ride should be stored at Firebase
             // store ride basic info into Firebase
             mStore.collection("Rides-" + mAuth.getCurrentUser().getUid())
@@ -160,6 +166,7 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                     Log.w(TAG, "Error adding document", e);
                 }
             });
+
             // store ride path file into Firebase
             try{
                 String filename = mAuth.getCurrentUser().getUid()+"_"+dateTime+".csv"; // file name
@@ -183,6 +190,8 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                     });
                 }
             }catch (Exception e){e.printStackTrace();}
+            // update the history avg speed
+            try{updateHisAvgSpeed();}catch (Exception e){e.printStackTrace();}
             Toast.makeText(SaveRideActivity.this, "Ride Uploaded", Toast.LENGTH_SHORT).show();
         }else{ // user has not login, store the data in local storage
             File fileInfo = new File(getApplicationContext().getFilesDir(), dateTime + "info");
@@ -192,7 +201,7 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                 BufferedWriter bf = new BufferedWriter(fw);
                 for (String entry : rideInfo.keySet()) {
                     bf.write(entry + ":" + rideInfo.get(entry));
-                    //System.out.println("Write " + entry + ":" + rideInfo.get(entry));
+                    System.out.println("Write " + entry + ":" + rideInfo.get(entry));
                     bf.newLine();
                 }
                 //bf.flush();
@@ -232,6 +241,43 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding));
             }catch (Exception e){e.printStackTrace();}
         }
+    }
+
+    public void updateHisAvgSpeed(){
+
+        String collectionName = "Rides-" + mAuth.getCurrentUser().getUid();
+
+        mStore.collection(collectionName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    ArrayList<Double> allAVGspd = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        RideObject ro = document.toObject(RideObject.class);
+                        double avgspd = 0;
+                        try {
+                            avgspd = ro.getAVGspd();
+                        }catch (Exception e){e.printStackTrace();}
+                        System.out.println("AVG spd got hahahahah" + avgspd);
+                        allAVGspd.add(avgspd);
+                        if (!allAVGspd.isEmpty()){
+                            double sum = 0;
+                            for (Double d : allAVGspd) sum = sum + d;
+                            Double hisAVGspd = (double) Math.round((sum / allAVGspd.size()) * 10) / 10 ;
+                            System.out.println("history avg spd calculated jajajajaja" + hisAVGspd);
+                            Map<String, Object> updateInfo = new HashMap<String, Object>();
+                            updateInfo.put("AVGspd", hisAVGspd);
+                            mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).update(updateInfo);
+                            System.out.println("his avg spd updated wahoooooo");
+                        }
+                    }
+                }else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+
     }
 
     @Override

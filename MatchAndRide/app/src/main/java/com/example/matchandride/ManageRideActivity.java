@@ -18,7 +18,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -125,7 +127,7 @@ public class ManageRideActivity extends AppCompatActivity {
             rideItems.addView(tv);
             getDataLocal();
         }
-        mStore.collection("Rides-" + curUserId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mStore.collection("Rides-" + curUserId).orderBy("Timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -141,8 +143,8 @@ public class ManageRideActivity extends AppCompatActivity {
                     tv.setText("Below are the uploaded rides");
                     rideItems.addView(tv);
                     // for each ride, create a button to view details of it
-                    for (int i = task.getResult().getDocuments().size(); i > 0; i--) { // reverse order
-                        DocumentSnapshot document = task.getResult().getDocuments().get(i-1);
+                    for (QueryDocumentSnapshot document : task.getResult()) { // reverse order
+                        //DocumentSnapshot document = doc.;
                         Button rideDate = new Button(getApplicationContext());
                         rideDate.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
                         rideDate.setHeight((int) ((int) 65*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f));

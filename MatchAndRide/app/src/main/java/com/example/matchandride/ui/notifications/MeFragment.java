@@ -26,6 +26,7 @@ import com.example.matchandride.MainActivity;
 import com.example.matchandride.ManageRideActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentMeBinding;
+import com.example.matchandride.objects.RideObject;
 import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +35,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.StorageReference;
@@ -42,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,18 +95,17 @@ public class MeFragment extends Fragment {
 
         FirebaseUser currentUser = MainActivity.mAuth.getCurrentUser();
         DocumentReference dRef = MainActivity.mStore.collection("UserNames").document(currentUser.getUid());
-        String[] userInfo = new String[2];
         dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        userInfo[0] = document.getString("Username");
                         /* GET&SET MORE INFO HERE, AVG SPEED, RATING, .... */
-                        userName.setText(userInfo[0]);
+                        userName.setText(document.getString("Username"));
+                        avgSpeed.setText("History AVG Speed: " + document.get("AVGspd").toString() + "kph");
+                        rating.setText("Rating: " + document.get("Rating").toString() + "/5");
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
-                        System.out.println( "Current username: " + userInfo[0]);
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -194,7 +197,6 @@ public class MeFragment extends Fragment {
         });
 
     }
-
 
     @Override
     public void onDestroyView() {

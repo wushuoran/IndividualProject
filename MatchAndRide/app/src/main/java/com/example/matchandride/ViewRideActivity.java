@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.matchandride.objects.RideObject;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -31,10 +32,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -49,6 +53,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -68,6 +74,7 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
     private String isLocal;
     public static final String TAG = "TAG";
     private String[] localRideInfo = new String[4];
+    private String tstamp;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -140,6 +147,7 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
                                 }
                             });
                             ManageRideActivity.thisAct.finish(); // force the manage activity to reload
+                            updateHisAvgSpeed();
                             startActivity(new Intent(ViewRideActivity.this, ManageRideActivity.class));
                             finish();
                         }else{
@@ -229,16 +237,30 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
             if (file.getName().equals(targetFileInfo)){
                 try{
                     BufferedReader br = new BufferedReader(new FileReader(file));
-                    for(int i = 0; i<4; i++){
+                    for(int i = 0; i<5; i++){
                         System.out.println("read current info file");
                         String line = br.readLine();
                         System.out.println(line);
                         String[] splitLine = line.split(":");
                         String value = splitLine[1];
-                        if (line.contains("Duration")){ this.timeMills = value; }
-                        if (line.contains("Distance")) { this.distance = value; }
-                        if (line.contains("Climb")) { this.climb = value; }
-                        if (line.contains("AVGspd")) { this.avgspd = value; }
+                        if (line.contains("Duration")){
+                            String timepassed = "time";
+                            for (int a=1; a<splitLine.length; a++){
+                                if (a==1) timepassed = splitLine[a];
+                                else timepassed = timepassed + ":" + splitLine[a];
+                            }
+                            this.timeMills = timepassed;
+                        }
+                        if (line.contains("Distance")) {
+                            this.distance = value;
+                        }
+                        if (line.contains("Climb")) {
+                            this.climb = value;
+                        }
+                        if (line.contains("AVGspd")) {
+                            this.avgspd = value;
+                        }
+                        if (line.contains("Timestamp")) {this.tstamp = value; } //Timestamp(seconds=1647213096, nanoseconds=274000000)
                     }
                     br.close();
                     this.timeTotal.setText(this.timeMills);
@@ -298,6 +320,7 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
         rideInfo.put("Distance", this.distance);
         rideInfo.put("Climb", this.climb);
         rideInfo.put("AVGspd", this.avgspd);
+        rideInfo.put("Timestamp", getTimestampFromStr(this.tstamp));
         // store ride basic info into Firebase
         mStore.collection("Rides-" + mAuth.getCurrentUser().getUid())
                 .document(dateTime).set(rideInfo)
@@ -354,6 +377,63 @@ public class ViewRideActivity extends AppCompatActivity implements OnMapReadyCal
         System.out.println("Finish reading csv!!!!!");
         traceMap.getMapAsync(this);
         System.out.println("Show Path on Map");
+    }
+
+    public void updateHisAvgSpeed(){
+
+        String collectionName = "Rides-" + mAuth.getCurrentUser().getUid();
+
+        mStore.collection(collectionName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    ArrayList<Double> allAVGspd = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        RideObject ro = document.toObject(RideObject.class);
+                        double avgspd = 0;
+                        try {
+                            avgspd = ro.getAVGspd();
+                        }catch (Exception e){e.printStackTrace();}
+                        System.out.println("AVG spd got hahahahah" + avgspd);
+                        allAVGspd.add(avgspd);
+                        if (!allAVGspd.isEmpty()){
+                            double sum = 0;
+                            for (Double d : allAVGspd) sum = sum + d;
+                            Double hisAVGspd = (double) Math.round((sum / allAVGspd.size()) * 10) / 10 ;
+                            System.out.println("history avg spd calculated jajajajaja" + hisAVGspd);
+                            Map<String, Object> updateInfo = new HashMap<String, Object>();
+                            updateInfo.put("AVGspd", hisAVGspd);
+                            mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).update(updateInfo);
+                            System.out.println("his avg spd updated wahoooooo");
+                        }
+                    }
+                }else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+    }
+
+    public Timestamp getTimestampFromStr(String ts){ //Timestamp(seconds=1647213096, nanoseconds=274000000)
+        ArrayList<String> matchList = new ArrayList<String>();
+        Pattern regex = Pattern.compile("\\((.*?)\\)");
+        Matcher regexMatcher = regex.matcher(ts);
+
+        while (regexMatcher.find()) {//Finds Matching Pattern in String
+            matchList.add(regexMatcher.group(1));//Fetching Group from String
+        }
+
+        String tsArg = matchList.get(0);
+        String[] split1 = tsArg.split(",");
+        String splitSec = split1[0].split("=")[1];
+        String splitNan = split1[1].split("=")[1];
+        long seconds = 0; int nano = 0;
+        try {
+            seconds = (long) Integer.valueOf(splitSec);
+            nano = Integer.valueOf(splitNan);
+        }catch (Exception e){e.printStackTrace();}
+        return new Timestamp(seconds,nano);
     }
 
     @Override

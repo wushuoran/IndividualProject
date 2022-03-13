@@ -91,8 +91,10 @@ public class RegisterActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             MainActivity.loginStatus = true;
                                             Map<String,Object> userInfo = new HashMap<>();
-                                            userInfo.put("Username", userName);
+                                            userInfo.put("AVGspd", "0");
                                             userInfo.put("Email", userEmail);
+                                            userInfo.put("Rating", "5");
+                                            userInfo.put("Username", userName);
                                             mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).set(userInfo)
                                                     .addOnCompleteListener((OnCompleteListener<Void>) (aVoid) -> {
                                                          Log.d(TAG, "DocumentSnapshot added");

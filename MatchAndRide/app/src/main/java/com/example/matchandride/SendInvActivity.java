@@ -361,7 +361,8 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
                     if (document.exists()) {
                         nearUserInfo[0] = document.getString("Username");
                         /* GET&SET MORE INFO HERE, AVG SPEED, RATING, .... */
-                        tv.setText(nearUserInfo[0] + ", " + "25Km/h, 5/5");
+                        tv.setText(nearUserInfo[0] + ", " + document.get("AVGspd").toString() + "kph, "
+                                + document.get("Rating") + "/5");
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
                     } else {
                         Log.d(TAG, "No such document");
