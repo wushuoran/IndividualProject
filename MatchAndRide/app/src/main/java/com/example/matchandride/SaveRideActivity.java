@@ -258,17 +258,17 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                         try {
                             avgspd = ro.getAVGspd();
                         }catch (Exception e){e.printStackTrace();}
-                        System.out.println("AVG spd got hahahahah" + avgspd);
+                        //System.out.println("AVG spd got hahahahah" + avgspd);
                         allAVGspd.add(avgspd);
                         if (!allAVGspd.isEmpty()){
                             double sum = 0;
                             for (Double d : allAVGspd) sum = sum + d;
                             Double hisAVGspd = (double) Math.round((sum / allAVGspd.size()) * 10) / 10 ;
-                            System.out.println("history avg spd calculated jajajajaja" + hisAVGspd);
+                            //System.out.println("history avg spd calculated jajajajaja" + hisAVGspd);
                             Map<String, Object> updateInfo = new HashMap<String, Object>();
                             updateInfo.put("AVGspd", hisAVGspd);
                             mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).update(updateInfo);
-                            System.out.println("his avg spd updated wahoooooo");
+                            //System.out.println("his avg spd updated wahoooooo");
                         }
                     }
                 }else {

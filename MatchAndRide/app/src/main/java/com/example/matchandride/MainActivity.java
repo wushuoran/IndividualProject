@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
     public static DatabaseReference mDbLoc;
     public static DatabaseReference mDbInv;
     public static DatabaseReference mDbAcc;
-    public static DatabaseReference mDbInvited;
+    //public static DatabaseReference mDbInvited;
     public static boolean onlineSwitchStatus;
     public static boolean isBackground;
     private ValueEventListener invEvnLis;
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
         mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
         mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
         mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
-        mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
+        //mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
 
         if (mAuth.getCurrentUser() != null){
             loginStatus = true;
@@ -151,32 +154,49 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
                 @SuppressLint("MissingPermission")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot sp : snapshot.getChildren()) {
-                        String childname = sp.getKey();
-                        String[] splitChild = childname.split(":");
-                        String invSender = splitChild[0];
-                        String invReci = splitChild[1];
-                        if (invReci.equals(MainActivity.mAuth.getCurrentUser().getUid())) {
-                            System.out.println("Invitation Detected!");
+                    mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()){
+                                        DocumentSnapshot document = task.getResult();
+                                        boolean isInvd = (boolean) document.get("isInvd");
+                                        for (DataSnapshot sp : snapshot.getChildren()) {
+                                            String childname = sp.getKey();
+                                            String[] splitChild = childname.split(":");
+                                            String invSender = splitChild[0];
+                                            String invReci = splitChild[1];
+                                            if (invReci.equals(MainActivity.mAuth.getCurrentUser().getUid())) {
+                                                System.out.println("Invitation Detected!");
 
-                            String invMsg = sp.getValue().toString();
-                            String[] splitMsg = invMsg.split(",");
-                            LatLng meetPlace = new LatLng(Double.valueOf(splitMsg[0]), Double.valueOf(splitMsg[1]));
-                            int estParti = Integer.valueOf(splitMsg[2]);
-                            try{
-                                //Toast.makeText(MainActivity.this, "One Invitation Received !\nview details in Discover page.", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(MainActivity.this, AcceptInvActivity.class);
-                                intent.putExtra("meetPlace", meetPlace);
-                                intent.putExtra("senderUid", invSender);
-                                intent.putExtra("estParti", estParti);
-                                intent.putExtra("curAct", "main");
-                                if (splitMsg.length == 4)intent.putExtra("addNotes", splitMsg[3]);
-                                MainActivity.mDbInv.removeEventListener(invEvnLis);
-                                startActivity(intent);
-                            }catch(Exception e){e.printStackTrace();}
-                            break;
-                        }
-                    }
+                                                String invMsg = sp.getValue().toString();
+                                                String[] splitMsg = invMsg.split(",");
+                                                LatLng meetPlace = new LatLng(Double.valueOf(splitMsg[0]), Double.valueOf(splitMsg[1]));
+                                                int estParti = Integer.valueOf(splitMsg[2]);
+                                                if (!isInvd){ // if the user is not invited
+                                                    try{
+                                                        Intent intent = new Intent(MainActivity.this, AcceptInvActivity.class);
+                                                        intent.putExtra("meetPlace", meetPlace);
+                                                        intent.putExtra("senderUid", invSender);
+                                                        intent.putExtra("estParti", estParti);
+                                                        intent.putExtra("curAct", "main");
+                                                        if (splitMsg.length == 4)intent.putExtra("addNotes", splitMsg[3]);
+                                                        MainActivity.mDbInv.removeEventListener(invEvnLis);
+                                                        startActivity(intent);
+                                                    }catch(Exception e){e.printStackTrace();}
+                                                }else{ // else directly refuse the invitation
+                                                    String childname2 = mAuth.getCurrentUser().getUid() + ":" + invSender;
+                                                    String invChildname = invSender + ":" + mAuth.getCurrentUser().getUid();
+                                                    mDbAcc.child(childname2).setValue(false);
+                                                    mDbInv.child(invChildname).removeValue();
+
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
                 }
 
                 @Override

@@ -7,7 +7,7 @@
     android:paddingRight="15dp"
     android:background="#FFFFFF">
 
-
+<!--
     <TextView
         android:id="@+id/text_chartTitle"
         android:layout_width="match_parent"
@@ -124,5 +124,5 @@
         android:layout_gravity="center"
         android:textSize="23sp"
         android:text="Road Condition" />
-
+-->
 </LinearLayout>

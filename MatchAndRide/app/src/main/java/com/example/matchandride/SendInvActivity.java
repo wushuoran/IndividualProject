@@ -67,7 +67,7 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
     public static DatabaseReference mDbInv;
     public static DatabaseReference mDbAcc;
     public static DatabaseReference mDbGrp;
-    public static DatabaseReference mDbInvited;
+    //public static DatabaseReference mDbInvited;
     private LatLng meetUpLoc;
     public static final String TAG = "TAG";
     private HashMap<String, Marker> nearbyUserMap = new HashMap<String, Marker>();
@@ -94,7 +94,7 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
         mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
         mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
         mDbGrp = FirebaseDatabase.getInstance().getReference("rt-groups");
-        mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
+        //mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
 
         meetMap = (MapView) findViewById(R.id.map_meet_up);
         invitedUsers = (LinearLayout) findViewById(R.id.sv_inv_list_layout);
@@ -170,6 +170,7 @@ public class SendInvActivity extends AppCompatActivity implements OnMapReadyCall
                     Toast.makeText(SendInvActivity.this,"Nobody in invite list", Toast.LENGTH_SHORT).show();
             }
         });
+
 
     }
 

@@ -28,7 +28,7 @@ import com.example.matchandride.R;
 import com.example.matchandride.RecordRideActivity;
 import com.example.matchandride.databinding.FragmentRideBinding;
 
-
+/*
 public class RideFragment extends Fragment {
 
 
@@ -54,12 +54,12 @@ public class RideFragment extends Fragment {
                 textView.setText(s);
             }
         });
-        */
-        weeklySum = (ImageView) root.findViewById(R.id.image_chart);
+
+        //weeklySum = (ImageView) root.findViewById(R.id.image_chart);
         onlineSwitch = (Switch) root.findViewById(R.id.switch_online);
-        bikeSelector = (Spinner) root.findViewById(R.id.spin_bikeType);
+        //bikeSelector = (Spinner) root.findViewById(R.id.spin_bikeType);
         startRide = (Button) root.findViewById(R.id.btn_startRiding);
-        inviteFri = (Button) root.findViewById(R.id.btn_invite);
+        //inviteFri = (Button) root.findViewById(R.id.btn_invite);
         popRoute = (Button) root.findViewById(R.id.btn_pop_route);
         roadCon = (Button) root.findViewById(R.id.btn_road_con);
 
@@ -130,4 +130,4 @@ public class RideFragment extends Fragment {
         binding = null;
     }
 
-}
+}*/

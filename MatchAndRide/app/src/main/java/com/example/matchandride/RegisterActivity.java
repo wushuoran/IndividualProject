@@ -95,6 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             userInfo.put("Email", userEmail);
                                             userInfo.put("Rating", "5");
                                             userInfo.put("Username", userName);
+                                            userInfo.put("isInvd", false);
                                             mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).set(userInfo)
                                                     .addOnCompleteListener((OnCompleteListener<Void>) (aVoid) -> {
                                                          Log.d(TAG, "DocumentSnapshot added");

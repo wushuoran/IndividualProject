@@ -28,10 +28,11 @@ import com.example.matchandride.AcceptInvActivity;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.R;
+import com.example.matchandride.RecordRideActivity;
 import com.example.matchandride.SaveRideActivity;
 import com.example.matchandride.SendInvActivity;
 import com.example.matchandride.databinding.FragmentDiscoverBinding;
-import com.example.matchandride.ui.home.RideFragment;
+//import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -71,8 +72,8 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
     private boolean rtDbIsSet = false;
     private ArrayList<String> invitedUsers;
     private ValueEventListener invEvnLis;
-    private HashMap<String, Boolean> inviteStatus = new HashMap<>();
     private boolean inviteStatusLisSet = false;
+    private Button startRide, inviteFri, popRoute, roadCon;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -83,22 +84,29 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
         View root = binding.getRoot();
 
         invitedUsers = new ArrayList<>();
-        bikeFilter = (Switch) root.findViewById(R.id.switch_filter);
+        //bikeFilter = (Switch) root.findViewById(R.id.switch_filter);
         nearbyMap = (MapView) root.findViewById(R.id.map_nearby);
         sendInv = (Button) root.findViewById(R.id.btn_set_inv);
 
+        startRide = (Button) root.findViewById(R.id.btn_startRiding);
+        popRoute = (Button) root.findViewById(R.id.btn_pop_route);
+        roadCon = (Button) root.findViewById(R.id.btn_road_con);
 
-        nearbyMap.onCreate(savedInstanceState);
-        nearbyMap.getMapAsync(this);
+        loadMap(savedInstanceState);
 
         ((MainActivity)getActivity()).listenToInv();
 
         setListeners();
 
-        checkUserInviteStatus(); //get invite status for the first time, immediately
-        checkUserInviteStatus2();// keep listen to updates
+        //checkUserInviteStatus(); //get invite status for the first time, immediately
+        //checkUserInviteStatus2();// keep listen to updates
 
         return root;
+    }
+
+    public void loadMap(Bundle savedInstanceState){
+        nearbyMap.onCreate(savedInstanceState);
+        nearbyMap.getMapAsync(this);
     }
 
     public void setListeners(){
@@ -118,6 +126,21 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                         Toast.makeText(getActivity().getApplicationContext(), "No user in Invite List!", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
+        });
+
+        startRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // once start riding, tell MainActivity, PLEASE DO NOT SET LISTENER!!!!
+                // but need to modify this boolean back if ride finished
+                MainActivity.goToOtherAct = true;
+                // once started riding, stop receiving invitation (from MainActivity)
+                // set a different listener in recording page
+                ((MainActivity)getActivity()).removeInvListener();
+                Intent intent = new Intent(getActivity(), RecordRideActivity.class);
+                intent.putExtra("isOnline", MainActivity.onlineSwitchStatus);
+                startActivity(intent);
             }
         });
 
@@ -228,11 +251,11 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                                                 DocumentSnapshot document = task.getResult();
                                                 if (document.exists()) {
                                                     System.out.println(nearUserInfo[0]);
-                                                    if (nearbyUserMap.containsKey(nearUserUid))
-                                                        nearbyUserMap.get(nearUserUid).setPosition(userLoc);
-                                                    else{
-                                                        String snippet = document.get("AVGspd").toString() + "kph, "
-                                                                        + document.get("Rating") + "/5";
+                                                    String snippet = document.get("AVGspd").toString() + "kph, "
+                                                            + document.get("Rating") + "/5";
+                                                    if (nearbyUserMap.containsKey(nearUserUid)){
+                                                            nearbyUserMap.get(nearUserUid).setPosition(userLoc);
+                                                    } else{
                                                         Marker userMk = googleMap.addMarker(new MarkerOptions()
                                                                 .position(userLoc)
                                                                 .title(document.getString("Username"))
@@ -281,11 +304,12 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                         }
                         offLineUser.clear();
                     }
-                    if (!inviteStatusLisSet){
+                    /*if (!inviteStatusLisSet){
                         checkUserInviteStatus(); //get invite status for the first time, immediately
                         checkUserInviteStatus2();// keep listen to updates
                         inviteStatusLisSet = true;
                     }
+                     */
 
 
                 }
@@ -324,20 +348,26 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                         builder.setPositiveButton("Add To List", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String userUid = findUidByMarker(marker);
-                                if (userUid != null && !invitedUsers.contains(userUid)){ // ensure no duplicate adding to list
-                                    if (inviteStatus.keySet().contains(userUid)){ // if successfully get invite status of current nearby users
-                                        if (!inviteStatus.get(userUid)){    // the user is not invited
-                                            invitedUsers.add(userUid);
-                                            Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" is added to Invite List"), Toast.LENGTH_SHORT).show();
-                                        }else{ // the user is invited
-                                            Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" is already in other's invitation"), Toast.LENGTH_SHORT).show();
+                                if (userUid != null ){ // ensure no duplicate adding to list
+                                    MainActivity.mStore.collection("UserNames").document(userUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()){
+                                                boolean isInvd = (boolean) task.getResult().get("isInvd");
+                                                if (isInvd){
+                                                    Toast.makeText(getActivity().getApplicationContext(), ("FAILED! " + marker.getTitle()+" is already invited by someone!"), Toast.LENGTH_SHORT).show();
+                                                }else{
+                                                    if (!invitedUsers.contains(userUid)){ // if successfully get invite status of current nearby users
+                                                        invitedUsers.add(userUid);
+                                                        Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" is added to Invite List"), Toast.LENGTH_SHORT).show();
+                                                    }else{
+                                                        Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" already in Invite List!!!"), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+
+                                            }
                                         }
-                                    }else{ // invite status is not get
-                                        invitedUsers.add(userUid);
-                                        Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" is added to Invite List"), Toast.LENGTH_SHORT).show();
-                                    }
-                                }else{
-                                    Toast.makeText(getActivity().getApplicationContext(), (marker.getTitle()+" already in Invite List!!!"), Toast.LENGTH_SHORT).show();
+                                    });
                                 }
                                 System.out.println(userUid + " is selected");
                             }
@@ -387,7 +417,7 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                 targetUid = uid;
         return targetUid;
     }
-
+/*
     public void checkUserInviteStatus(){
 
         MainActivity.mDbInvited.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -429,5 +459,5 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
             }
         });
     }
-
+*/
 }

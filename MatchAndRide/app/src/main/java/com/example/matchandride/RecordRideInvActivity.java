@@ -20,7 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.matchandride.ui.home.RideFragment;
+//import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -42,9 +42,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RecordRideInvActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -64,11 +66,12 @@ public class RecordRideInvActivity extends AppCompatActivity implements OnMapRea
     private double totalDistance = 0;
     private long timeStopped;
     public static FirebaseAuth mAuth;
+    public static FirebaseFirestore mStore;
     public static DatabaseReference mDbLoc;
     public static DatabaseReference mDbInv;
     public static DatabaseReference mDbAcc;
     public static DatabaseReference mDbGrp;
-    public static DatabaseReference mDbInvited;
+    //public static DatabaseReference mDbInvited;
     private Marker marker;
     public double curSpeed;
     public boolean isPaused = false;
@@ -88,11 +91,12 @@ public class RecordRideInvActivity extends AppCompatActivity implements OnMapRea
         try { RecordRideActivity.rrAct.finish(); }catch (Exception e){e.printStackTrace();}
 
         mAuth = FirebaseAuth.getInstance();
+        mStore = FirebaseFirestore.getInstance();
         mDbLoc = FirebaseDatabase.getInstance().getReference("rt-location");
         mDbInv = FirebaseDatabase.getInstance().getReference("rt-invitation");
         mDbAcc = FirebaseDatabase.getInstance().getReference("rt-accept");
         mDbGrp = FirebaseDatabase.getInstance().getReference("rt-groups");
-        mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
+        //mDbInvited = FirebaseDatabase.getInstance().getReference("rt-invited");
 
         groupMembers = new ArrayList<>();
         routePoints = new ArrayList<>();
@@ -129,8 +133,11 @@ public class RecordRideInvActivity extends AppCompatActivity implements OnMapRea
                 intent.putParcelableArrayListExtra("routePoints", routePoints);
                 // if event organizer terminates the ride, delete the group info
                 if (isOrganizer) mDbGrp.child(mAuth.getCurrentUser().getUid()).removeValue();
+                Map<String,Object> invStatus = new HashMap<String,Object>();
+                invStatus.put("isInvd", false);
+                mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).update(invStatus);
                 // set user himself not invited
-                mDbInvited.child(mAuth.getCurrentUser().getUid()).setValue(false);
+                //mDbInvited.child(mAuth.getCurrentUser().getUid()).setValue(false);
                 startActivity(intent);
                 finish();
                 return false;

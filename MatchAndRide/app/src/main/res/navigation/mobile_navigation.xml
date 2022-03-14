@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_ride">
-<!--   -->
+    app:startDestination="@+id/navigation_discover">
+<!--
     <fragment
         android:id="@+id/navigation_ride"
         android:name="com.example.matchandride.ui.home.RideFragment"
         android:label="Match &amp; Ride"
         tools:layout="@layout/fragment_ride"
     />
-
+    -->
     <fragment
         android:id="@+id/navigation_discover"
         android:name="com.example.matchandride.ui.dashboard.DiscoverFragment"

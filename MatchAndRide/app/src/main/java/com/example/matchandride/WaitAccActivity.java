@@ -28,6 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WaitAccActivity extends AppCompatActivity {
 
@@ -116,7 +117,9 @@ public class WaitAccActivity extends AppCompatActivity {
     }
 
     public void setJoinedUser(String uid){
+        //System.out.println(uid + "joined");
         acceptedUser.add(uid);
+        //System.out.println(acceptedUser);
         TextView tv = new TextView(getApplicationContext());
         tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         tv.setHeight((int) ((int) 45*(getApplicationContext().getResources().getDisplayMetrics().density) + 0.5f));
@@ -141,11 +144,19 @@ public class WaitAccActivity extends AppCompatActivity {
             for (String id: invUids){                                           // remove invitation response on rt-acc
                 String childToRemove = id + ":" + SendInvActivity.mAuth.getCurrentUser().getUid();
                 SendInvActivity.mDbAcc.child(childToRemove).removeValue();
-                SendInvActivity.mDbInvited.child(id).setValue(true);
+            }
+            for (String id: acceptedUser){
+                //SendInvActivity.mDbInvited.child(id).setValue(true);
                 groupMembers = groupMembers + "," + id;
             }
+            // set group members
             SendInvActivity.mDbGrp.child(currentUserId).setValue(groupMembers);
-            SendInvActivity.mDbInvited.child(currentUserId).setValue(true);
+            // update sender's invitation status
+            Map<String,Object> invStatus = new HashMap<String,Object>();
+            invStatus.put("isInvd", true);
+            SendInvActivity.mStore.collection("UserNames")
+                    .document(SendInvActivity.mAuth.getCurrentUser().getUid()).update(invStatus);
+            //SendInvActivity.mDbInvited.child(currentUserId).setValue(true);
             startRiding.setEnabled(true);
             startRiding.setText("Start!");
             timer.allHaveResult = true;

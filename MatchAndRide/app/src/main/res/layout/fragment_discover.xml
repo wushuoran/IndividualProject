@@ -8,7 +8,7 @@
     android:background="#FFFFFF"
     android:orientation="vertical">
 
-    <LinearLayout
+    <!--LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -44,6 +44,7 @@
             />
 
     </LinearLayout>
+    -->
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map_nearby"
@@ -56,14 +57,62 @@
         map:zOrderOnTop="true"
         />
 
-    <Button
-        android:id="@+id/btn_set_inv"
-        android:layout_width="310dp"
-        android:layout_height="65dp"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:textSize="25sp"
-        android:text="Setup Invitation" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_startRiding"
+                android:layout_width="310dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"
+                android:textSize="25sp"
+                android:text="Start Riding"
+                />
+
+            <Button
+                android:id="@+id/btn_set_inv"
+                android:layout_width="310dp"
+                android:layout_height="65dp"
+                android:textAllCaps="false"
+                android:layout_gravity="center"
+                android:textSize="25sp"
+                android:text="Setup Invitation" />
+
+            <Button
+                android:id="@+id/btn_pop_route"
+                android:layout_width="310dp"
+                android:layout_height="65dp"
+                android:textAllCaps="false"
+                android:layout_gravity="center"
+                android:textSize="25sp"
+                android:text="Popular Routes" />
+
+            <Button
+                android:id="@+id/btn_road_con"
+                android:layout_width="310dp"
+                android:layout_height="65dp"
+                android:textAllCaps="false"
+                android:layout_gravity="center"
+                android:textSize="25sp"
+                android:text="Road Condition"
+                android:layout_marginBottom="70dp"/>
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+
 
 
 

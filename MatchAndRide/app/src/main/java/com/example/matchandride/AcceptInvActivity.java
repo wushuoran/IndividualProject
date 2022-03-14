@@ -141,6 +141,9 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
                     System.out.println("listener in recording activity removed!");
                     saveRide();
                 }
+                Map<String,Object> invStatus = new HashMap<String,Object>();
+                invStatus.put("isInvd", true);
+                mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).update(invStatus);
                 Intent intent = new Intent(AcceptInvActivity.this, RecordRideInvActivity.class);
                 intent.putExtra("sender", senderUid);
                 intent.putExtra("organizer",false);
@@ -166,8 +169,8 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
                     if (document.exists()) {
                         nearUserInfo[0] = document.getString("Username");
                         rideInfo.setText("Inviter: " + nearUserInfo[0]
-                                        + "\nAVG Speed: 20Kph"
-                                        + "\nRating: 5/5"
+                                        + "\nAVG Speed: " + document.get("AVGspd").toString() + "kph"
+                                        + "\nRating: " + document.get("Rating").toString() + "/5"
                                         + "\nEst. Participants: " + estParti);
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
                     } else {

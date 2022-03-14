@@ -81,54 +81,101 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_manage_ride"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_marginTop="15dp"
-        android:textSize="20sp"
-        android:textAllCaps="false"
-        android:text="View / Manage Rides"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
 
-    <Button
-        android:id="@+id/btn_fri_req"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_marginTop="8dp"
-        android:textSize="20sp"
-        android:textAllCaps="false"
-        android:text="Friend Requests"
-        />
+        <TextView
+            android:id="@+id/text_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="left"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:text="   Visible"
+            />
 
-    <Button
-        android:id="@+id/btn_fri_list"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_marginTop="8dp"
-        android:textSize="20sp"
-        android:textAllCaps="false"
-        android:text="Friends List"
-        />
+        <Switch
+            android:id="@+id/switch_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="200dp"
+            android:layout_marginTop="5dp"
+            />
 
-    <Button
-        android:id="@+id/btn_account_set"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_marginTop="8dp"
-        android:textSize="20sp"
-        android:textAllCaps="false"
-        android:text="Account Settings"
-        />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_login"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_marginTop="8dp"
-        android:textSize="20sp"
-        android:textAllCaps="false"
-        android:text="Login / Logout"
-        />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_manage_ride"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:text="View / Manage Rides"
+                />
+
+            <Button
+                android:id="@+id/btn_fri_req"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:text="Friend Requests"
+                />
+
+            <Button
+                android:id="@+id/btn_fri_list"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:text="Friends List"
+                />
+
+            <Button
+                android:id="@+id/btn_account_set"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:text="Account Settings"
+                />
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:text="Login / Logout"
+                />
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+
 
 </LinearLayout>

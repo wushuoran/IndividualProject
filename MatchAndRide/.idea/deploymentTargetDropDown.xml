@@ -38,6 +38,15 @@
         <deviceKey>
           <Key>
             <type value="SERIAL_NUMBER" />
+            <value value="D5F7N18623003948" />
+          </Key>
+        </deviceKey>
+      </Target>
+      <Target>
+        <type value="RUNNING_DEVICE_TARGET" />
+        <deviceKey>
+          <Key>
+            <type value="SERIAL_NUMBER" />
             <value value="MQS7N19321009025" />
           </Key>
         </deviceKey>

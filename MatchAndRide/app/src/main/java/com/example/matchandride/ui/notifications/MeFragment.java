@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,7 @@ import com.example.matchandride.ManageRideActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentMeBinding;
 import com.example.matchandride.objects.RideObject;
-import com.example.matchandride.ui.home.RideFragment;
+//import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,6 +57,7 @@ public class MeFragment extends Fragment {
     public static final String TAG = "TAG";
     Button editPro, manageRide, friReq, friList, accSetting, loginBtn;
     ImageView portrait;
+    public static Switch onlineSwitch;
     TextView userName, avgSpeed, rating;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +77,8 @@ public class MeFragment extends Fragment {
         userName = (TextView) root.findViewById(R.id.text_username);
         avgSpeed = (TextView) root.findViewById(R.id.text_avg_speed);
         rating = (TextView) root.findViewById(R.id.text_user_rating);
+        onlineSwitch = (Switch) root.findViewById(R.id.switch_online);
+        onlineSwitch.setChecked(MainActivity.onlineSwitchStatus);
 
         if(MainActivity.mAuth.getCurrentUser() != null) {
             try {
@@ -195,6 +199,24 @@ public class MeFragment extends Fragment {
                 startActivity(new Intent(getActivity(), ManageRideActivity.class));
             }
         });
+
+        onlineSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.mAuth.getCurrentUser() == null) {
+                    onlineSwitch.setChecked(false);
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }else {
+                    if (!onlineSwitch.isChecked()){
+                        try{MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).removeValue();}catch(Exception e){e.printStackTrace();}
+                        MainActivity.onlineSwitchStatus = false;
+                    }else{
+                        MainActivity.onlineSwitchStatus = true;
+                    }
+                }
+            }
+        });
+
 
     }
 
