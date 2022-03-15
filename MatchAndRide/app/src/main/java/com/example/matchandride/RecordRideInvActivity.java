@@ -131,6 +131,8 @@ public class RecordRideInvActivity extends AppCompatActivity implements OnMapRea
                 intent.putExtra("climbTotal", txtClimb.getText().toString());
                 intent.putExtra("avgSpd", txtAvgSpd.getText().toString());
                 intent.putParcelableArrayListExtra("routePoints", routePoints);
+                intent.putExtra("isGroup", true);
+                intent.putExtra("groupMembers", groupMembers);
                 // if event organizer terminates the ride, delete the group info
                 if (isOrganizer) mDbGrp.child(mAuth.getCurrentUser().getUid()).removeValue();
                 Map<String,Object> invStatus = new HashMap<String,Object>();

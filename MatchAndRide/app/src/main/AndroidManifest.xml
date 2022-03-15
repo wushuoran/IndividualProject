@@ -120,6 +120,11 @@
             android:theme="@style/Theme.MyApplicationNoBar">
         </activity>
 
+        <activity
+            android:name="com.example.matchandride.RateUsersActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
     </application>
 
 </manifest>

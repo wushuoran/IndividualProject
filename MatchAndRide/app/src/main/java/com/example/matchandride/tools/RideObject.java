@@ -1,4 +1,4 @@
-package com.example.matchandride.objects;
+package com.example.matchandride.tools;
 
 public class RideObject {
 

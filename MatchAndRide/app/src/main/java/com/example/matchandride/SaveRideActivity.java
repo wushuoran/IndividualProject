@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.matchandride.objects.RideObject;
+import com.example.matchandride.tools.RideObject;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -35,7 +35,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -58,6 +57,8 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
     private FirebaseStorage mStra;
     private StorageReference straRef;
     public static final String TAG = "TAG";
+    private boolean isGroup = false;
+    private ArrayList<String> groupMembers;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -67,6 +68,9 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
         mStore = FirebaseFirestore.getInstance();
         mStra = FirebaseStorage.getInstance();
         straRef = mStra.getReference();
+
+        routePoints = new ArrayList<>();
+        groupMembers = new ArrayList<>();
 
         getRideData();
 
@@ -101,8 +105,15 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
                 saveRide();
                 MainActivity.goToOtherAct = false;
-                startActivity(new Intent(SaveRideActivity.this, MainActivity.class));
-                finish();
+                if (!isGroup){
+                    startActivity(new Intent(SaveRideActivity.this, MainActivity.class));
+                    finish();
+                }else{
+                    Intent intent = new Intent(SaveRideActivity.this, RateUsersActivity.class);
+                    intent.putExtra("groupMembers", groupMembers);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
@@ -114,9 +125,16 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
                         .setTitle("Confirm").setCancelable(true);
                 builder.setPositiveButton("Discard", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        MainActivity.goToOtherAct = false;
-                        startActivity(new Intent(SaveRideActivity.this, MainActivity.class));
-                        finish();
+                        if (!isGroup){
+                            MainActivity.goToOtherAct = false;
+                            startActivity(new Intent(SaveRideActivity.this, MainActivity.class));
+                            finish();
+                        }else{
+                            Intent intent = new Intent(SaveRideActivity.this, RateUsersActivity.class);
+                            intent.putExtra("groupMembers", groupMembers);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -139,6 +157,8 @@ public class SaveRideActivity extends AppCompatActivity implements OnMapReadyCal
         this.climb = (String) extras.get("climbTotal");
         this.avgspd = (String) extras.get("avgSpd");
         this.routePoints = this.getIntent().getParcelableArrayListExtra("routePoints");
+        this.isGroup = (boolean) extras.get("isGroup");
+        if (isGroup) groupMembers = (ArrayList<String>) extras.get("groupMembers");
     }
 
     public void saveRide(){

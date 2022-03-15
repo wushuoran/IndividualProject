@@ -1,11 +1,8 @@
 package com.example.matchandride.ui.notifications;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,14 +17,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
 import com.example.matchandride.AccSettingActivity;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.ManageRideActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.databinding.FragmentMeBinding;
-import com.example.matchandride.objects.RideObject;
 //import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -36,16 +31,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,8 +77,8 @@ public class MeFragment extends Fragment {
             }
         }
         setListeners();
-
         ((MainActivity)getActivity()).listenToInv();
+        calculateRatings();
 
         return root;
 
@@ -209,15 +198,45 @@ public class MeFragment extends Fragment {
                 }else {
                     if (!onlineSwitch.isChecked()){
                         try{MainActivity.mDbLoc.child(MainActivity.mAuth.getUid()).removeValue();}catch(Exception e){e.printStackTrace();}
+                        ((MainActivity)getActivity()).removeInvListener();
                         MainActivity.onlineSwitchStatus = false;
                     }else{
                         MainActivity.onlineSwitchStatus = true;
+                        ((MainActivity)getActivity()).listenToInv();
                     }
                 }
             }
         });
 
 
+    }
+
+    public void calculateRatings(){
+        try{
+            MainActivity.mStore.collection("UserRatings").document(MainActivity.mAuth.getCurrentUser().getUid()).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()){
+                                DocumentSnapshot document = task.getResult();
+                                Map<String,Object> ratings = document.getData();
+                                ArrayList<Long> ratingsArr = new ArrayList<>();
+                                if (ratings!=null){
+                                    for(String uid: ratings.keySet())
+                                        ratingsArr.add((long)ratings.get(uid));
+                                    double sum = 0;
+                                    for (Long d : ratingsArr) sum = sum + d;
+                                    Double avgRating = (double) Math.round((sum / ratingsArr.size()) * 10) / 10 ;
+                                    Map<String, Object> updateInfo = new HashMap<String, Object>();
+                                    updateInfo.put("Rating", avgRating);
+                                    MainActivity.mStore.collection("UserNames")
+                                            .document(MainActivity.mAuth.getCurrentUser().getUid()).update(updateInfo);
+
+                                }
+                            }
+                        }
+                    });
+        }catch (Exception e){e.printStackTrace();}
     }
 
     @Override

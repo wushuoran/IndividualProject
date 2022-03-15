@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="15dp">
+
+    <ImageView
+        android:id="@+id/iv_rate_user"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:background="@color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/tv_rate_username"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="Hello"
+            android:textSize="20sp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please give a rating: "
+            android:textSize="15sp"
+            android:textColor="@color/black"/>
+
+        <RadioGroup
+            android:id="@+id/radio_group_ratings"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:orientation="horizontal"
+            android:paddingTop="3dp">
+
+            <RadioButton
+                android:id="@+id/cb_rate_1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/radio_btn"
+                android:button="@null"
+                android:text="1"
+                android:layout_marginLeft="5dp"
+                android:textSize="16sp"
+                android:gravity="center"/>
+
+            <RadioButton
+                android:id="@+id/cb_rate_2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/radio_btn"
+                android:button="@null"
+                android:text="2"
+                android:layout_marginLeft="10dp"
+                android:textSize="16sp"
+                android:gravity="center"/>
+
+            <RadioButton
+                android:id="@+id/cb_rate_3"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/radio_btn"
+                android:button="@null"
+                android:layout_marginLeft="10dp"
+                android:text="3"
+                android:textSize="16sp"
+                android:gravity="center"/>
+
+            <RadioButton
+                android:id="@+id/cb_rate_4"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/radio_btn"
+                android:button="@null"
+                android:text="4"
+                android:layout_marginLeft="10dp"
+                android:textSize="16sp"
+                android:gravity="center"/>
+
+            <RadioButton
+                android:id="@+id/cb_rate_5"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/radio_btn"
+                android:button="@null"
+                android:text="5"
+                android:layout_marginLeft="10dp"
+                android:textSize="16sp"
+                android:gravity="center"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</LinearLayout>

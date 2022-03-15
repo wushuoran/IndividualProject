@@ -152,6 +152,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                 intent.putExtra("climbTotal", txtClimb.getText().toString());
                 intent.putExtra("avgSpd", txtAvgSpd.getText().toString());
                 intent.putParcelableArrayListExtra("routePoints", routePoints);
+                intent.putExtra("isGroup", false);
                 startActivity(intent);
                 finish();
                 return false;
