@@ -125,6 +125,16 @@
             android:theme="@style/Theme.MyApplicationNoBar">
         </activity>
 
+        <activity
+            android:name="com.example.matchandride.FindFriendsActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
+        <activity
+            android:name="com.example.matchandride.ViewFriendsActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
     </application>
 
 </manifest>

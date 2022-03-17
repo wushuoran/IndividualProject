@@ -52,6 +52,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
@@ -256,12 +257,41 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                                                     if (nearbyUserMap.containsKey(nearUserUid)){
                                                             nearbyUserMap.get(nearUserUid).setPosition(userLoc);
                                                     } else{
-                                                        Marker userMk = googleMap.addMarker(new MarkerOptions()
-                                                                .position(userLoc)
-                                                                .title(document.getString("Username"))
-                                                                .snippet(snippet)
-                                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_red_16)));
-                                                        nearbyUserMap.put(nearUserUid, userMk);
+                                                        MainActivity.mStore.collection("UserFriends")
+                                                                .document(MainActivity.mAuth.getCurrentUser().getUid()).get()
+                                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                        if (task.isSuccessful()){
+                                                                            Map<String, Object> friends = task.getResult().getData();
+                                                                            if (friends!=null){
+                                                                                if(friends.containsKey(nearUserUid)&&(boolean)friends.get(nearUserUid)){
+                                                                                    Marker userMk = googleMap.addMarker(new MarkerOptions()
+                                                                                            .position(userLoc)
+                                                                                            .title(document.getString("Username"))
+                                                                                            .snippet(snippet)
+                                                                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_fri_32)));
+                                                                                    nearbyUserMap.put(nearUserUid, userMk);
+                                                                                }else {
+                                                                                    Marker userMk = googleMap.addMarker(new MarkerOptions()
+                                                                                            .position(userLoc)
+                                                                                            .title(document.getString("Username"))
+                                                                                            .snippet(snippet)
+                                                                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_red_16)));
+                                                                                    nearbyUserMap.put(nearUserUid, userMk);
+                                                                                }
+                                                                            }else {
+                                                                                Marker userMk = googleMap.addMarker(new MarkerOptions()
+                                                                                        .position(userLoc)
+                                                                                        .title(document.getString("Username"))
+                                                                                        .snippet(snippet)
+                                                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.bike_red_16)));
+                                                                                nearbyUserMap.put(nearUserUid, userMk);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                });
+                                                        //original place
                                                     }
 
                                                     Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());

@@ -14,6 +14,8 @@
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/drawable/radio_btn.xml" value="0.4323076923076923" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_acc_inv.xml" value="0.3703125" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_acc_setting.xml" value="0.33" />
+        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_find_friends.xml" value="0.39375" />
+        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_friend_list.xml" value="0.42291666666666666" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_manage_ride.xml" value="0.3723958333333333" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/activity_rate_users.xml" value="0.42291666666666666" />
@@ -31,7 +33,8 @@
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_login.xml" value="0.390625" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_me.xml" value="0.30842391304347827" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/fragment_ride.xml" value="0.390625" />
-        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/item_rate_users.xml" value="0.42291666666666666" />
+        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/item_rate_users.xml" value="0.25" />
+        <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/item_user_info.xml" value="0.38125" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/login_page.xml" value="0.25" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/register_page.xml" value="0.327445652173913" />
         <entry key="..\:/Users/wushu/Desktop/MatchAndRide/app/src/main/res/layout/terms_page.xml" value="0.22" />

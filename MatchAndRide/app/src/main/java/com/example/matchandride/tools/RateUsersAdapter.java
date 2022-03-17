@@ -87,6 +87,7 @@ public class RateUsersAdapter extends BaseAdapter {
         public RadioGroup ratings;
     }
 
+    // NOTE i in the parameters, make sure index in hashmap starts from 0, this i starts from 0
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder = null;

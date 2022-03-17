@@ -18,10 +18,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.matchandride.AccSettingActivity;
+import com.example.matchandride.FindFriendsActivity;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
 import com.example.matchandride.ManageRideActivity;
 import com.example.matchandride.R;
+import com.example.matchandride.ViewFriendsActivity;
 import com.example.matchandride.databinding.FragmentMeBinding;
 //import com.example.matchandride.ui.home.RideFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,7 +46,7 @@ public class MeFragment extends Fragment {
     private MeViewModel meViewModel;
     private FragmentMeBinding binding;
     public static final String TAG = "TAG";
-    Button editPro, manageRide, friReq, friList, accSetting, loginBtn;
+    Button manageRide, friReq, friList, accSetting, loginBtn;
     ImageView portrait;
     public static Switch onlineSwitch;
     TextView userName, avgSpeed, rating;
@@ -56,7 +58,6 @@ public class MeFragment extends Fragment {
         binding = FragmentMeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //editPro = (Button) root.findViewById(R.id.btn_edit_profile);
         manageRide = (Button) root.findViewById(R.id.btn_manage_ride);
         friReq = (Button) root.findViewById(R.id.btn_fri_req);
         friList = (Button) root.findViewById(R.id.btn_fri_list);
@@ -155,7 +156,7 @@ public class MeFragment extends Fragment {
                 if (MainActivity.mAuth.getCurrentUser() == null)
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 else {
-
+                    startActivity(new Intent(getActivity(), FindFriendsActivity.class));
                 }
             }
         });
@@ -166,7 +167,7 @@ public class MeFragment extends Fragment {
                 if (MainActivity.mAuth.getCurrentUser() == null)
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 else {
-
+                    startActivity(new Intent(getActivity(), ViewFriendsActivity.class));
                 }
             }
         });
@@ -221,7 +222,7 @@ public class MeFragment extends Fragment {
                                 DocumentSnapshot document = task.getResult();
                                 Map<String,Object> ratings = document.getData();
                                 ArrayList<Long> ratingsArr = new ArrayList<>();
-                                if (ratings!=null){
+                                if (ratings!=null){ // if document does not exist, the data will be null
                                     for(String uid: ratings.keySet())
                                         ratingsArr.add((long)ratings.get(uid));
                                     double sum = 0;
