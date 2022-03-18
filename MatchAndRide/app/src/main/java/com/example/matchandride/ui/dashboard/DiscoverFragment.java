@@ -27,8 +27,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.matchandride.AcceptInvActivity;
 import com.example.matchandride.LoginActivity;
 import com.example.matchandride.MainActivity;
+import com.example.matchandride.PopRoutesActivity;
 import com.example.matchandride.R;
 import com.example.matchandride.RecordRideActivity;
+import com.example.matchandride.RoadConditionActivity;
 import com.example.matchandride.SaveRideActivity;
 import com.example.matchandride.SendInvActivity;
 import com.example.matchandride.databinding.FragmentDiscoverBinding;
@@ -142,6 +144,28 @@ public class DiscoverFragment extends Fragment implements OnMapReadyCallback{
                 Intent intent = new Intent(getActivity(), RecordRideActivity.class);
                 intent.putExtra("isOnline", MainActivity.onlineSwitchStatus);
                 startActivity(intent);
+            }
+        });
+
+        popRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.mAuth.getCurrentUser() == null)
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                else {
+                    startActivity(new Intent(getActivity(), PopRoutesActivity.class));
+                }
+            }
+        });
+
+        roadCon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.mAuth.getCurrentUser() == null)
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                else {
+                    startActivity(new Intent(getActivity(), RoadConditionActivity.class));
+                }
             }
         });
 

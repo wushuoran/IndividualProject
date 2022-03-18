@@ -135,6 +135,21 @@
             android:theme="@style/Theme.MyApplicationNoBar">
         </activity>
 
+        <activity
+            android:name="com.example.matchandride.PopRoutesActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
+        <activity
+            android:name="com.example.matchandride.RoadConditionActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
+        <activity
+            android:name="com.example.matchandride.ReportRoadConActivity"
+            android:theme="@style/Theme.MyApplicationNoBar">
+        </activity>
+
     </application>
 
 </manifest>
