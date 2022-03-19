@@ -12,6 +12,7 @@
         android:scaleType="centerCrop"/>
 
     <TextView
+        android:id="@+id/tv_issue_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAllCaps="false"

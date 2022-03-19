@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -100,9 +101,10 @@ public class ReportRoadConActivity extends AppCompatActivity implements OnMapRea
                 String details = issueDetail.getText().toString();
                 if (details!=null && issuePoint !=null){
                     if (details.length()>10){
+                        GeoPoint geoPoint = new GeoPoint(issueLatLng.latitude, issueLatLng.longitude);
                         Map<String,Object> issueInfo = new HashMap<>();
                         issueInfo.put("Details", details);
-                        issueInfo.put("Location", issueLatLng);
+                        issueInfo.put("Location", geoPoint);
                         issueInfo.put("PhotoName", filename);
                         issueInfo.put("CreateTime", new Timestamp(0,0).now());
                         mStore.collection("RoadConditions").document(uploadTime).set(issueInfo)
