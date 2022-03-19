@@ -30,8 +30,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="60sp"
-            android:text="a \n a \n a \n a\n a\n a\n a\n a\n a\n a\n a\n"/>
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:text="Please read all the terms and conditions.
+\n \nThis is a total-free application that allows finding cyclists nearby and sending invitations.
+Riding a bike on the road can be dangerous, please keep focusing on real time situations on the road while riding.
+\n\n When the visible button is enabled, your real-time location along with history average speed and rating are shared on Google Firebase,
+your information will be visible by all users within 5km range. All the users within the 5km range can send invitations to you.
+\n\nWhen receiving invitations, please ALWAYS find a safe place to stop the bike, then view the invitation.
+It's always up to you to accept the invitation or not. Please carefully check the meet-up location is reachable and safe, if not, please refuse.
+Also, the history average speed and rating of invitation sender will be displayed, please DO NOT accept invitations from an user
+who is much faster or have a low rating.
+\n\n When sending invitations, please make sure you choose a location that is not too far from each attendance to meet, please ENSURE the meet up
+location is safe and can be easily reached, please DO NOT race on public roads. You may be responsible for accidents during riding.
+\n\n We are NOT responsible for any accidents during the use of this application, PLEASE ALWAYS KEEP SAFETY IN MIND"/>
 
     </ScrollView>
 
