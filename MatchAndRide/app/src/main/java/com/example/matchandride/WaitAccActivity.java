@@ -80,9 +80,9 @@ public class WaitAccActivity extends AppCompatActivity {
                             String expectChild = uid + ":" + SendInvActivity.mAuth.getCurrentUser().getUid();
                             if (sp.getKey().equals(expectChild) && !checkedChild.contains(sp.getKey())){ // it's a user response
                                 userResponseAmt--;
+                                checkedChild.add(expectChild);
                                 boolean isAccepted = Boolean.valueOf(sp.getValue().toString());
                                 if (isAccepted){
-                                    checkedChild.add(expectChild);
                                     setJoinedUser(uid);
                                 }else {
                                     Toast.makeText(WaitAccActivity.this, "One user refused invitation.", Toast.LENGTH_SHORT).show();

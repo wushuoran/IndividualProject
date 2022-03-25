@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
     private ValueEventListener invEvnLis;
     public static boolean isInvited;
     public static boolean goToOtherAct = false;
+    public static Activity mainAct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
         super.onCreate(savedInstanceState);
         registerComponentCallbacks(this);
         getApplication().registerActivityLifecycleCallbacks(this);
+
+        mainAct = this;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -168,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
                                             String invReci = splitChild[1];
                                             if (invReci.equals(MainActivity.mAuth.getCurrentUser().getUid())) {
                                                 System.out.println("Invitation Detected!");
-
                                                 String invMsg = sp.getValue().toString();
                                                 String[] splitMsg = invMsg.split(",");
                                                 LatLng meetPlace = new LatLng(Double.valueOf(splitMsg[0]), Double.valueOf(splitMsg[1]));
@@ -181,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements Application.Activ
                                                         intent.putExtra("estParti", estParti);
                                                         intent.putExtra("curAct", "main");
                                                         if (splitMsg.length == 4)intent.putExtra("addNotes", splitMsg[3]);
-                                                        MainActivity.mDbInv.removeEventListener(invEvnLis);
-                                                        startActivity(intent);
+                                                        mDbInv.removeEventListener(invEvnLis);
+                                                            startActivity(intent);
                                                     }catch(Exception e){e.printStackTrace();}
                                                 }else{ // else directly refuse the invitation
                                                     String childname2 = mAuth.getCurrentUser().getUid() + ":" + invSender;

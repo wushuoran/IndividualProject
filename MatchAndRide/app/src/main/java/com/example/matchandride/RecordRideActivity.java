@@ -386,6 +386,7 @@ public class RecordRideActivity extends AppCompatActivity implements OnMapReadyC
                                             intent.putExtra("avgSpd", txtAvgSpd.getText().toString());
                                             intent.putParcelableArrayListExtra("routePoints", routePoints);
                                             vib.cancel();
+                                            dialog.cancel();
                                             startActivity(intent);
                                         } catch (Exception e) {
                                             e.printStackTrace();

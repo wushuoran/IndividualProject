@@ -48,7 +48,7 @@ public class ChangeUsernameActivity extends AppCompatActivity {
                     Map<String,Object> userInfo = new HashMap<>();
                     userInfo.put("Username", newusername);
                     userInfo.put("Email", mAuth.getCurrentUser().getEmail());
-                    mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).set(userInfo)
+                    mStore.collection("UserNames").document(mAuth.getCurrentUser().getUid()).update(userInfo)
                             .addOnCompleteListener((OnCompleteListener<Void>) (aVoid) -> {
                                 Log.d(TAG, "DocumentSnapshot added");
                                 Toast.makeText(ChangeUsernameActivity.this, "Username Changed.", Toast.LENGTH_LONG).show();

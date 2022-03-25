@@ -121,6 +121,9 @@ public class AcceptInvActivity extends AppCompatActivity implements OnMapReadyCa
             public void onClick(View view) {
                 mDbAcc.child(childname).setValue(false);
                 mDbInv.child(invChildname).removeValue();
+                if (lastAct.equals("main")){
+                    startActivity(new Intent(AcceptInvActivity.this, MainActivity.class));
+                }
                 timer.operationMade = true;
                 vib.cancel();
                 finish();
